@@ -7,6 +7,7 @@ import com.juanbenevento.wms.domain.model.Dimensions;
 import com.juanbenevento.wms.domain.model.Product;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -46,5 +47,9 @@ public class ProductService implements CreateProductUseCase {
 
         // 4. Persistir usando el Puerto de Salida
         return productRepository.save(newProduct);
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
