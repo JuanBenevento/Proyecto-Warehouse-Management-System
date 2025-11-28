@@ -5,7 +5,9 @@ import com.juanbenevento.wms.domain.model.Dimensions;
 import com.juanbenevento.wms.domain.model.Product;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ProductPersistenceAdapter implements ProductRepositoryPort {
@@ -34,6 +36,13 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 .map(this::toDomain); // Si existe, lo convierte a dominio
     }
 
+    @Override
+    public List<Product> findAll() {
+        return jpaRepository.findAll()
+                .stream()
+                .map(this::toDomain) // Reutilizamos tu método toDomain
+                .collect(Collectors.toList());
+    }
     // --- MAPPERS (Traductores) ---
 
     private ProductEntity toEntity(Product product) {

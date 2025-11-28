@@ -2,24 +2,28 @@ package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
 import com.juanbenevento.wms.application.ports.in.CreateProductCommand;
 import com.juanbenevento.wms.application.ports.in.CreateProductUseCase;
+import com.juanbenevento.wms.application.service.ProductService;
 import com.juanbenevento.wms.domain.model.Product;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    // Inyectamos la Interfaz del Caso de Uso (No el servicio directamente)
     private final CreateProductUseCase createProductUseCase;
 
     public ProductController(CreateProductUseCase createProductUseCase) {
         this.createProductUseCase = createProductUseCase;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(createProductUseCase.getAllProducts());
     }
 
     @PostMapping
