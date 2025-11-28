@@ -5,5 +5,6 @@ public enum InventoryStatus {
     AVAILABLE,        // Listo para venta
     RESERVED,         // Asignado a un pedido (nadie más lo puede tocar)
     DAMAGED,          // Roto / No apto
-    EXPIRED           // Vencido
+    EXPIRED,
+    SHIPPED// Vencido
 }

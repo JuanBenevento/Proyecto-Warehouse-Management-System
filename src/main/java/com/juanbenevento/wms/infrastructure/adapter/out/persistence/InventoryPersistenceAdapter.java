@@ -2,6 +2,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.domain.model.InventoryItem;
+import com.juanbenevento.wms.domain.model.InventoryStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,23 @@ public class InventoryPersistenceAdapter implements InventoryRepositoryPort {
     @Override
     public List<InventoryItem> findByProduct(String sku) {
         return jpaRepository.findByProductSku(sku)
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InventoryItem> findAvailableStock(String sku) {
+        return jpaRepository.findByProductSkuAndStatusOrderByExpiryDateAsc(sku, InventoryStatus.AVAILABLE)
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InventoryItem> findReservedStock(String sku) {
+        // Reutilizamos la query de Spring Data pero filtrando por RESERVED
+        return jpaRepository.findByProductSkuAndStatusOrderByExpiryDateAsc(sku, InventoryStatus.RESERVED)
                 .stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
