@@ -1,0 +1,65 @@
+<div class="container mt-5">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">📦 Nuevo Producto</h3>
+    </div>
+    
+    <div class="card-body">
+      <form (ngSubmit)="onSubmit()">
+        
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">SKU</label>
+            <input type="text" class="form-control" [(ngModel)]="product.sku" name="sku" required placeholder="Ej: TV-LG-55">
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Nombre del Producto</label>
+            <input type="text" class="form-control" [(ngModel)]="product.name" name="name" required placeholder="Ej: Smart TV 55 Pulgadas">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Descripción</label>
+          <textarea class="form-control" [(ngModel)]="product.description" name="desc" rows="2"></textarea>
+        </div>
+
+        <h5 class="mt-4 mb-3 text-secondary">📏 Dimensiones y Peso</h5>
+        
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Ancho (cm)</label>
+            <input type="number" class="form-control" [(ngModel)]="product.dimensions.width" name="width">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Alto (cm)</label>
+            <input type="number" class="form-control" [(ngModel)]="product.dimensions.height" name="height">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Profundidad (cm)</label>
+            <input type="number" class="form-control" [(ngModel)]="product.dimensions.depth" name="depth">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Peso (kg)</label>
+            <div class="input-group">
+              <input type="number" class="form-control" [(ngModel)]="product.dimensions.weight" name="weight">
+              <span class="input-group-text">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button type="submit" class="btn btn-success btn-lg px-5">
+            <i class="bi bi-save"></i> Guardar Producto
+          </button>
+        </div>
+
+      </form>
+
+      <div *ngIf="message" class="alert alert-info mt-3" role="alert">
+        {{ message }}
+      </div>
+    </div>
+  </div>
+</div>

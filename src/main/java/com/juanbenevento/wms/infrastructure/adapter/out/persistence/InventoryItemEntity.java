@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.domain.model.InventoryStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -11,8 +12,8 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class InventoryItemEntity {
+@SuperBuilder
+public class InventoryItemEntity extends AuditableEntity{
 
     @Id
     @Column(name = "lpn")
@@ -32,6 +33,4 @@ public class InventoryItemEntity {
     @Column(nullable = false)
     private String locationCode;
 
-    // Auditoría básica (opcional pero recomendada)
-    // private LocalDateTime lastUpdated;
 }
