@@ -5,7 +5,9 @@ import com.juanbenevento.wms.domain.model.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor // Lombok nos crea el constructor automáticamente
@@ -24,6 +26,14 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
     public Optional<Location> findByCode(String code) {
         return jpaRepository.findByLocationCode(code)
                 .map(this::toDomain);
+    }
+
+    @Override
+    public List<Location> findAll() {
+        return jpaRepository.findAll()
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
     }
 
     // --- MAPPERS (Traductores) ---

@@ -3,8 +3,12 @@ package com.juanbenevento.wms.application.service;
 import com.juanbenevento.wms.application.ports.in.ShipStockCommand;
 import com.juanbenevento.wms.application.ports.in.ShipStockUseCase;
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
+import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
+import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
 import com.juanbenevento.wms.domain.model.InventoryItem;
 import com.juanbenevento.wms.domain.model.InventoryStatus;
+import com.juanbenevento.wms.domain.model.Location;
+import com.juanbenevento.wms.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +18,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ShippingService implements ShipStockUseCase {
-
     private final InventoryRepositoryPort inventoryRepository;
+    private final LocationRepositoryPort locationRepository;
+    private final ProductRepositoryPort productRepository;
 
     @Override
-    @Transactional // Transacción atómica: O salen todos, o no sale ninguno
+    @Transactional
     public void shipStock(ShipStockCommand command) {
-
-        // 1. Buscar SOLO items que ya estén reservados (Previamente hicimos el Picking)
         List<InventoryItem> reservedItems = inventoryRepository.findReservedStock(command.sku());
 
         double quantityToShip = command.quantity();
@@ -32,16 +35,22 @@ public class ShippingService implements ShipStockUseCase {
             double currentQty = item.getQuantity();
             double takenQty = Math.min(currentQty, quantityToShip);
 
-            // 2. Lógica de Negocio: Actualizar Estado
-            // Si nos llevamos todo el lote del pallet
+            Location location = locationRepository.findByCode(item.getLocationCode())
+                    .orElseThrow(() -> new IllegalStateException("Error de integridad: La ubicación " + item.getLocationCode() + " no existe"));
+
+            Product product = productRepository.findBySku(item.getProductSku())
+                    .orElseThrow(() -> new IllegalStateException("Error de integridad: El producto " + item.getProductSku() + " no existe"));
+
+            Double weightRelease = product.getDimensions().weight() * takenQty;
+            Double volumeRelease = product.getStorageVolume() * takenQty;
+
+            location.removeLoad(weightRelease, volumeRelease);
+            locationRepository.save(location);
+
             if (takenQty >= currentQty) {
-                item.setStatus(InventoryStatus.SHIPPED); // Ya no cuenta como activo
-                item.setLocationCode("OUT_GATE"); // Ubicación virtual de salida
-                // Opcional: item.setQuantity(0.0); si quieres vaciarlo
+                item.setStatus(InventoryStatus.SHIPPED);
+                item.setLocationCode("OUT_GATE");
             } else {
-                // Si es un despacho parcial (raro en reservados, pero posible)
-                // Aquí deberíamos dividir el item (split), pero para MVP simplificamos:
-                // Solo permitimos despachar pallets completos en este ejemplo.
                 item.setStatus(InventoryStatus.SHIPPED);
                 item.setLocationCode("OUT_GATE");
             }

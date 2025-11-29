@@ -3,7 +3,6 @@ package com.juanbenevento.wms.domain.model;
 import java.util.UUID;
 
 public class Product {
-
     // Identificador único (generado por negocio, no por DB todavía)
     private final UUID id;
     private final String sku;
