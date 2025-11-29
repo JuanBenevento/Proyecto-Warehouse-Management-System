@@ -21,7 +21,6 @@ import java.time.LocalDate;
 @RequestMapping("/api/v1/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
-
     private final ReceiveInventoryUseCase receiveInventoryUseCase;
     private final PutAwayUseCase putAwayUseCase;
 
@@ -52,7 +51,6 @@ public class InventoryController {
         return ResponseEntity.ok().build();
     }
 
-    // DTO Entrada JSON
     public record ReceiveInventoryRequest(
             @NotBlank(message = "El SKU es obligatorio")
             String productSku,

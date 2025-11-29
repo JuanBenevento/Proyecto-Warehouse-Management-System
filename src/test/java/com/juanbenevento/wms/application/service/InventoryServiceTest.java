@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class) // Habilita las anotaciones @Mock
+@ExtendWith(MockitoExtension.class)
 class InventoryServiceTest {
 
     // 1. MOCKS: Simulamos los "Puertos de Salida" (No usamos base de datos real)
@@ -32,7 +32,6 @@ class InventoryServiceTest {
     @Mock
     private org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    // 2. INJECT MOCKS: Instancia el servicio real e inyecta los mocks dentro
     @InjectMocks
     private InventoryService inventoryService;
 
@@ -67,7 +66,7 @@ class InventoryServiceTest {
         assertNotNull(result);
         assertNotNull(result.getLpn()); // Debe haber generado un LPN
         assertTrue(result.getLpn().startsWith("LPN-"));
-        assertEquals(InventoryStatus.IN_QUALITY_CHECK, result.getStatus()); // Regla de negocio vital
+        assertEquals(InventoryStatus.IN_QUALITY_CHECK, result.getStatus()); // Regla de negocio
         assertEquals(10.0, result.getQuantity());
 
         // Verificamos que el servicio realmente llamó a 'save' una vez

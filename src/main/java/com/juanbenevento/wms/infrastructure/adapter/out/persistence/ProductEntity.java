@@ -17,7 +17,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductEntity extends AuditableEntity{
-
     @Id
     private UUID id;
 

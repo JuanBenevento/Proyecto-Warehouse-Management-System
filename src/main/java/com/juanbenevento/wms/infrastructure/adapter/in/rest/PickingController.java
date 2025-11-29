@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/picking")
 @RequiredArgsConstructor
 public class PickingController {
-
     private final AllocateStockUseCase allocateStockUseCase;
     private final ShipStockUseCase shipStockUseCase;
 

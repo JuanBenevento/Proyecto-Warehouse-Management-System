@@ -26,7 +26,7 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
                 .map(this::toDomain);
     }
 
-    // --- MAPPERS (Traductores) ---
+    // --- MAPPERS ---
 
     private LocationEntity toEntity(Location domain) {
         return LocationEntity.builder()
@@ -40,7 +40,6 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
     }
 
     private Location toDomain(LocationEntity entity) {
-        // Reconstruimos el objeto de dominio con su estado
         return new Location(
                 entity.getLocationCode(),
                 entity.getZoneType(),

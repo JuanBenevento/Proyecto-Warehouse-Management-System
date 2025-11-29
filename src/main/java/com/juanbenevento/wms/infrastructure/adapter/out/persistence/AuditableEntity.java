@@ -19,12 +19,12 @@ import java.time.LocalDateTime;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@MappedSuperclass // Significa: "No crees una tabla para mí, pon mis columnas en las tablas de mis hijos"
-@EntityListeners(AuditingEntityListener.class) // El "espía" de JPA que llena los datos
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableEntity {
 
     @CreatedBy
-    @Column(updatable = false) // El creador nunca cambia
+    @Column(updatable = false)
     private String createdBy;
 
     @CreatedDate

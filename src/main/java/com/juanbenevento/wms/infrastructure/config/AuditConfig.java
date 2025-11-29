@@ -16,14 +16,12 @@ public class AuditConfig {
     @Bean
     public AuditorAware<String> auditorProvider() {
         return () -> {
-            // Buscamos al usuario en el contexto de seguridad (JWT)
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (authentication == null || !authentication.isAuthenticated()) {
-                return Optional.empty(); // Si lo hace el sistema (ej: inicio), retorna vacío
+                return Optional.empty();
             }
 
-            // Retorna el 'username' del token (ej: "admin")
             return Optional.of(authentication.getName());
         };
     }

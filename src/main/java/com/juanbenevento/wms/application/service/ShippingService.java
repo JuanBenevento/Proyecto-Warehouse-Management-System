@@ -33,11 +33,9 @@ public class ShippingService implements ShipStockUseCase {
             double takenQty = Math.min(currentQty, quantityToShip);
 
             // 2. Lógica de Negocio: Actualizar Estado
-            // Si nos llevamos todo el lote del pallet
             if (takenQty >= currentQty) {
                 item.setStatus(InventoryStatus.SHIPPED); // Ya no cuenta como activo
                 item.setLocationCode("OUT_GATE"); // Ubicación virtual de salida
-                // Opcional: item.setQuantity(0.0); si quieres vaciarlo
             } else {
                 // Si es un despacho parcial (raro en reservados, pero posible)
                 // Aquí deberíamos dividir el item (split), pero para MVP simplificamos:

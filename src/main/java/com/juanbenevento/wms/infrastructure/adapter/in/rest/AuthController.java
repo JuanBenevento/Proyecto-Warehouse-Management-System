@@ -29,7 +29,7 @@ public class AuthController {
         var user = UserEntity.builder()
                 .username(request.username)
                 .password(passwordEncoder.encode(request.password))
-                .role(Role.ADMIN) // Por defecto creamos admins para probar
+                .role(Role.ADMIN)
                 .build();
 
         userRepository.save(user);
@@ -49,7 +49,6 @@ public class AuthController {
         return ResponseEntity.ok(new AuthResponse(jwtToken));
     }
 
-    // DTOs auxiliares
     public record RegisterRequest(String username, String password) {}
     public record LoginRequest(String username, String password) {}
     public record AuthResponse(String token) {}

@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @SuperBuilder
 public class InventoryItemEntity extends AuditableEntity{
-
     @Id
     @Column(name = "lpn")
     private String lpn; // La etiqueta es la Primary Key

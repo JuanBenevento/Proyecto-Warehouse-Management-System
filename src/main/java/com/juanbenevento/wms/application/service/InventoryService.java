@@ -29,21 +29,16 @@ public class InventoryService implements ReceiveInventoryUseCase, PutAwayUseCase
     @Override
     @Transactional
     public InventoryItem receiveInventory(ReceiveInventoryCommand command) {
-        // 1. Validar que el producto exista
         if (productRepository.findBySku(command.productSku()).isEmpty()) {
             throw new IllegalArgumentException("El producto " + command.productSku() + " no existe.");
         }
 
-        // 2. Validar que la ubicación exista
         if (locationRepository.findByCode(command.locationCode()).isEmpty()) {
             throw new IllegalArgumentException("La ubicación " + command.locationCode() + " no existe.");
         }
 
-        // 3. Generar LPN (License Plate Number) Único
-        // En un sistema real usaríamos una secuencia de DB, aquí usamos UUID acortado para simular
         String lpn = "LPN-" + System.currentTimeMillis();
 
-        // 4. Crear el objeto de Dominio
         InventoryItem newItem = new InventoryItem(
                 lpn,
                 command.productSku(),
@@ -66,13 +61,11 @@ public class InventoryService implements ReceiveInventoryUseCase, PutAwayUseCase
 
         eventPublisher.publishEvent(event);
 
-        // 5. Guardar
         return savedItem;
     }
 
     @Override
     public void putAwayInventory(PutAwayInventoryCommand command) {
-        // 1. Buscar el inventario por LPN
         InventoryItem item = inventoryRepository.findByLpn(command.lpn())
                 .orElseThrow(() -> new IllegalArgumentException("Inventario no encontrado para LPN: " + command.lpn()));
 

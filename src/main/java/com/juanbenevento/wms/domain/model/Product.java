@@ -3,7 +3,6 @@ package com.juanbenevento.wms.domain.model;
 import java.util.UUID;
 
 public class Product {
-
     // Identificador único (generado por negocio, no por DB todavía)
     private final UUID id;
     private final String sku;
@@ -13,7 +12,6 @@ public class Product {
     // Composición: El producto "tiene" dimensiones
     private final Dimensions dimensions;
 
-    // Constructor Principal
     public Product(UUID id, String sku, String name, String description, Dimensions dimensions) {
         this.id = id;
         this.sku = sku;
@@ -23,7 +21,6 @@ public class Product {
         validate();
     }
 
-    // Validación de integridad de dominio
     private void validate() {
         if (id == null) throw new IllegalArgumentException("El ID del producto es obligatorio");
         if (sku == null || sku.isBlank()) throw new IllegalArgumentException("El SKU es obligatorio");
@@ -40,7 +37,6 @@ public class Product {
         return this.dimensions.isHeavyLoad();
     }
 
-    // --- GETTERS (Solo lectura) ---
     public UUID getId() { return id; }
     public String getSku() { return sku; }
     public String getName() { return name; }

@@ -20,13 +20,10 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
 
     @Override
     public Product save(Product product) {
-        // 1. Convertir Dominio -> Entidad DB
         ProductEntity entity = toEntity(product);
 
-        // 2. Guardar en DB
         ProductEntity savedEntity = jpaRepository.save(entity);
 
-        // 3. Convertir Entidad DB -> Dominio y retornar
         return toDomain(savedEntity);
     }
 
@@ -43,7 +40,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 .map(this::toDomain) // Reutilizamos tu método toDomain
                 .collect(Collectors.toList());
     }
-    // --- MAPPERS (Traductores) ---
+    // --- MAPPERS ---
 
     private ProductEntity toEntity(Product product) {
         return new ProductEntity(

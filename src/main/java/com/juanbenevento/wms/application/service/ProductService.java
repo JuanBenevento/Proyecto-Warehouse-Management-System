@@ -12,8 +12,6 @@ import java.util.UUID;
 
 @Service
 public class ProductService implements CreateProductUseCase {
-
-    // Inyectamos la INTERFAZ, no la implementación (Desacoplamiento total)
     private final ProductRepositoryPort productRepository;
 
     public ProductService(ProductRepositoryPort productRepository) {
@@ -23,12 +21,10 @@ public class ProductService implements CreateProductUseCase {
     @Override
     public Product createProduct(CreateProductCommand command) {
 
-        // 1. Validar regla de negocio: ¿Ya existe el SKU?
         if (productRepository.findBySku(command.sku()).isPresent()) {
             throw new IllegalArgumentException("El producto con SKU " + command.sku() + " ya existe.");
         }
 
-        // 2. Convertir Comando -> Value Objects
         Dimensions dims = new Dimensions(
                 command.width(),
                 command.height(),
@@ -36,16 +32,14 @@ public class ProductService implements CreateProductUseCase {
                 command.weight()
         );
 
-        // 3. Crear Entidad de Dominio
         Product newProduct = new Product(
-                UUID.randomUUID(), // Generamos ID aquí
+                UUID.randomUUID(),
                 command.sku(),
                 command.name(),
                 command.description(),
                 dims
         );
 
-        // 4. Persistir usando el Puerto de Salida
         return productRepository.save(newProduct);
     }
 

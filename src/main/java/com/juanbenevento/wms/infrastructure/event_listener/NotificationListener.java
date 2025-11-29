@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Slf4j // Lombok nos da un logger "log" gratis
 public class NotificationListener {
 
-    @Async // ¡Magia! Esto corre en un hilo separado para no frenar la respuesta al usuario
+    @Async
     @EventListener
     public void handleStockReceived(StockReceivedEvent event) {
         // Simulación de envío de correo

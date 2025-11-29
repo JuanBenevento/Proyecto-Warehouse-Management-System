@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
 public class LocationController {
-
     private final CreateLocationUseCase createLocationUseCase;
 
     @PostMapping
@@ -29,7 +28,6 @@ public class LocationController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    // DTO para el JSON de entrada
     public record CreateLocationRequest(
             String locationCode,
             ZoneType zoneType,
