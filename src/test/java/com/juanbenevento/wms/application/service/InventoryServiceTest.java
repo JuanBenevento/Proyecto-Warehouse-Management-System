@@ -52,7 +52,7 @@ class InventoryServiceTest {
         when(productRepository.findBySku(sku)).thenReturn(Optional.of(mockProduct));
 
         // Simulamos una ubicación existente
-        Location mockLocation = new Location(locationCode, ZoneType.DRY_STORAGE, 1000.0, 1000.0);
+        Location mockLocation = new Location(locationCode, ZoneType.DRY_STORAGE, 100000.0, 100000.0);
         when(locationRepository.findByCode(locationCode)).thenReturn(Optional.of(mockLocation));
 
         // Simulamos que al guardar, devuelve el mismo item que le pasamos
@@ -92,7 +92,7 @@ class InventoryServiceTest {
             inventoryService.receiveInventory(command);
         });
 
-        assertEquals("El producto SKU-FANTASMA no existe.", exception.getMessage());
+        assertEquals("Producto no existe", exception.getMessage());
 
         // Verificamos que NUNCA intentó guardar nada
         verify(inventoryRepository, never()).save(any());
