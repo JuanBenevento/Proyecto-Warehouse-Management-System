@@ -7,10 +7,15 @@ import com.juanbenevento.wms.application.ports.in.ReceiveInventoryUseCase;
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
+import com.juanbenevento.wms.domain.event.StockReceivedEvent;
 import com.juanbenevento.wms.domain.model.InventoryItem;
 import com.juanbenevento.wms.domain.model.InventoryStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +24,10 @@ public class InventoryService implements ReceiveInventoryUseCase, PutAwayUseCase
     private final InventoryRepositoryPort inventoryRepository;
     private final ProductRepositoryPort productRepository;
     private final LocationRepositoryPort locationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
+    @Transactional
     public InventoryItem receiveInventory(ReceiveInventoryCommand command) {
         // 1. Validar que el producto exista
         if (productRepository.findBySku(command.productSku()).isEmpty()) {
@@ -47,8 +54,20 @@ public class InventoryService implements ReceiveInventoryUseCase, PutAwayUseCase
                 command.locationCode()
         );
 
+        InventoryItem savedItem = inventoryRepository.save(newItem);
+
+        StockReceivedEvent event = new StockReceivedEvent(
+                savedItem.getLpn(),
+                savedItem.getProductSku(),
+                savedItem.getQuantity(),
+                savedItem.getLocationCode(),
+                LocalDateTime.now()
+        );
+
+        eventPublisher.publishEvent(event);
+
         // 5. Guardar
-        return inventoryRepository.save(newItem);
+        return savedItem;
     }
 
     @Override
