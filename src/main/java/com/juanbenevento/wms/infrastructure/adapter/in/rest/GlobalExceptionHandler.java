@@ -33,6 +33,8 @@ public class GlobalExceptionHandler {
     // Capturar errores inesperados (NullPointer, etc)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex, HttpServletRequest request) {
+        System.err.println("🔥 ERROR CRÍTICO CAPTURADO:");
+        ex.printStackTrace();
 
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),

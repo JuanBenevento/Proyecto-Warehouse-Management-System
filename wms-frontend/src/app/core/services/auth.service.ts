@@ -1,6 +1,14 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode'; 
+import { Router } from '@angular/router';
+
+interface CustomTokenPayload {
+  sub: string; 
+  role: string; 
+  exp: number; 
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,33 +16,70 @@ import { tap } from 'rxjs/operators';
 export class AuthService {
   
   private http = inject(HttpClient);
+  private router = inject(Router);
   private apiUrl = 'http://localhost:8080/api/v1/auth';
-  private tokenKey = 'wms_token'; // Nombre para guardar en el navegador
+  private tokenKey = 'wms_token';
 
-  // Login: Envía usuario/pass y guarda el token si es correcto
+  currentUser = signal<string | null>(null);
+  currentRole = signal<string | null>(null);
+
+  constructor() {
+    if (this.isAuthenticated()) {
+      this.decodeToken();
+    }
+  }
+
   login(credentials: any) {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         if (response.token) {
           localStorage.setItem(this.tokenKey, response.token);
+          this.decodeToken(); 
         }
       })
     );
   }
 
-  // Logout: Borra el token
   logout() {
     localStorage.removeItem(this.tokenKey);
-    window.location.reload(); // Recarga la página para limpiar estados
+    this.currentUser.set(null);
+    this.currentRole.set(null);
+    this.router.navigate(['/login']);
   }
 
-  // Obtener el token guardado
+  private decodeToken() {
+    const token = this.getToken();
+    if (token) {
+      try {
+        const decoded = jwtDecode<CustomTokenPayload>(token);
+        this.currentUser.set(decoded.sub); 
+        this.currentRole.set(decoded.role);
+      } catch (error) {
+        console.error('Token inválido', error);
+        this.logout();
+      }
+    }
+  }
+
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
 
-  // Saber si está logueado
   isAuthenticated(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    if (!token) return false;
+    
+    const decoded = jwtDecode<CustomTokenPayload>(token);
+    const isExpired = decoded.exp * 1000 < Date.now();
+    
+    if (isExpired) {
+      this.logout();
+      return false;
+    }
+    return true;
+  }
+
+  hasRole(requiredRole: string): boolean {
+    return this.currentRole() === requiredRole;
   }
 }

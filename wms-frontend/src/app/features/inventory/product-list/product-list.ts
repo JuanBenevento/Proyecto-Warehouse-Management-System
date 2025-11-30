@@ -9,7 +9,7 @@ import { ProductService } from '../../../core/services/product.service';
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })
-export class ProductList {
+export class ProductListComponent {
   private productService = inject(ProductService);
   products: Product[] = [];
 

@@ -6,7 +6,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const token = authService.getToken();
 
-  // Si tenemos token, clonamos la petición y le pegamos el header
   if (token) {
     const clonedReq = req.clone({
       setHeaders: {
@@ -16,6 +15,5 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(clonedReq);
   }
 
-  // Si no hay token, la dejamos pasar tal cual (ej: login)
   return next(req);
 };
