@@ -10,4 +10,5 @@ public interface InventoryRepositoryPort {
     List<InventoryItem> findByProduct(String sku);
     List<InventoryItem> findAvailableStock(String sku);
     List<InventoryItem> findReservedStock(String sku);
+    List<InventoryItem> findAll();
 }

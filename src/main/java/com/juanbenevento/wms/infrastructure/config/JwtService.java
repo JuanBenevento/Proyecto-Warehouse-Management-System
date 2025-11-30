@@ -16,9 +16,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
-    // CLAVE SECRETA: En producción esto va en variables de entorno.
-    // Debe ser larga (hexadecimal de 256 bits).
     private static final String SECRET_KEY = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
     public String extractUsername(String token) {
@@ -31,7 +28,12 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        String role = userDetails.getAuthorities().iterator().next().getAuthority();
+
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("role", role);
+
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
@@ -69,4 +71,6 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

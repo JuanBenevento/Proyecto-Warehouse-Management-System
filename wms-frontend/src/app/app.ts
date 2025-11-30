@@ -1,27 +1,20 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { ProductCreate } from "./features/inventory/product-create/product-create";
-import { ProductList } from './features/inventory/product-list/product-list';
-import { InventoryReceiveComponent } from "./features/inventory/inventory-receive/inventory-receive";
-import { AuthService } from './core/services/auth.service';
+import { NavbarComponent } from './shared/components/navbar/navbar';
 import { LoginComponent } from './features/auth/login/login';
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, RouterOutlet, ProductCreate, ProductList, InventoryReceiveComponent, LoginComponent],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, NavbarComponent, LoginComponent],
+  templateUrl: './app.html'
 })
-export class App {
-  protected title = 'wms-frontend';
-  authService = inject(AuthService); 
- 
+export class AppComponent {
+  authService = inject(AuthService);
+
   isLoggedIn() {
     return this.authService.isAuthenticated();
-  }
-
-  logout() {
-    this.authService.logout();
   }
 }

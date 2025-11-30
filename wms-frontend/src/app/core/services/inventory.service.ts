@@ -21,4 +21,13 @@ export class InventoryService {
   receiveInventory(data: any): Observable<InventoryItemResponse> {
     return this.http.post<InventoryItemResponse>(`${this.apiUrl}/receive`, data);
   }
+
+  confirmPutAway(lpn: string, targetLocationCode: string): Observable<void> {
+    const body = { lpn, targetLocationCode };
+    return this.http.put<void>(`${this.apiUrl}/put-away`, body);
+  }
+
+  getAllInventory(): Observable<InventoryItemResponse[]> {
+    return this.http.get<InventoryItemResponse[]>(`${this.apiUrl}/getAllInventory`);
+  }
 }

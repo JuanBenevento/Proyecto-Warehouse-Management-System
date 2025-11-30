@@ -4,6 +4,7 @@ import com.juanbenevento.wms.application.ports.in.PutAwayInventoryCommand;
 import com.juanbenevento.wms.application.ports.in.PutAwayUseCase;
 import com.juanbenevento.wms.application.ports.in.ReceiveInventoryCommand;
 import com.juanbenevento.wms.application.ports.in.ReceiveInventoryUseCase;
+import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
 import com.juanbenevento.wms.domain.model.InventoryItem;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/inventory")
@@ -29,6 +31,12 @@ public class InventoryController {
     private final ProductRepositoryPort productRepo;
     private final LocationRepositoryPort locationRepo;
     private final com.juanbenevento.wms.domain.service.PutAwayStrategy strategy;
+    private final InventoryRepositoryPort inventoryRepo;
+
+    @GetMapping("/getAllInventory")
+    public ResponseEntity<List<InventoryItem>> getAllInventory() {
+        return ResponseEntity.ok(inventoryRepo.findAll());
+    }
 
     @PostMapping("/receive")
     public ResponseEntity<InventoryItem> receiveInventory(@RequestBody @Valid ReceiveInventoryRequest request) {

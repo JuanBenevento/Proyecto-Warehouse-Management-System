@@ -14,16 +14,14 @@ export class InventoryReceiveComponent {
   
   private inventoryService = inject(InventoryService);
 
-  // Modelo del formulario
   receptionData = {
     productSku: '',
     quantity: 1,
-    locationCode: '',     // El usuario debe escribir una ubicación válida que hayas creado (ej: A-01-01)
+    locationCode: '',     
     batchNumber: '',
     expiryDate: ''
   };
 
-  // Aquí guardaremos el "Ticket" generado
   generatedTicket: InventoryItemResponse | null = null;
   errorMessage: string = '';
 
@@ -36,7 +34,6 @@ export class InventoryReceiveComponent {
         this.generatedTicket = response;
       },
       error: (err: any) => {
-        console.error(err);
         this.errorMessage = 'Error: ' + (err.error?.message || 'Verifica los datos');
       }
     });

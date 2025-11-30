@@ -54,6 +54,14 @@ public class InventoryPersistenceAdapter implements InventoryRepositoryPort {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<InventoryItem> findAll() {
+        return jpaRepository.findAll()
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
     // --- MAPPERS ---
 
     private InventoryItemEntity toEntity(InventoryItem domain) {
