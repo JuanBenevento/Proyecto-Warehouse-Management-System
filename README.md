@@ -52,8 +52,8 @@ El proyecto se aleja del clásico MVC acoplado para implementar una **Arquitectu
 | Capa | Tecnología | Detalles |
 | :--- | :--- | :--- |
 | **Backend** | Java 21 | Records, Stream API, Optional |
-| **Framework** | Spring Boot 3.2 | Spring Data JPA, Spring Security 6 |
-| **Frontend** | Angular 17 | Standalone Components, Signals, Interceptors |
+| **Framework** | Spring Boot 3.4 | Spring Data JPA, Spring Security 6 |
+| **Frontend** | Angular 17+ | Standalone Components, Signals, Interceptors |
 | **Base de Datos** | PostgreSQL 16 | Relacional, integridad referencial |
 | **UI/UX** | Bootstrap 5 | Diseño responsivo, Modales (SweetAlert2) |
 | **Doc** | OpenAPI / Swagger | Documentación viva de la API |
