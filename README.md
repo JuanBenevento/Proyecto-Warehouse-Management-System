@@ -1,7 +1,7 @@
 # 🏭 WMS Enterprise - Sistema de Gestión de Almacenes
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=java)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2-green?logo=spring-boot)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4-green?logo=spring-boot)
 ![Angular](https://img.shields.io/badge/Angular-17-red?logo=angular)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
 ![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-purple)
