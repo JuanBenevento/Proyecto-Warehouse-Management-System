@@ -1,4 +1,4 @@
-# 🏭 WMS Enterprise - Sistema de Gestión de Almacenes
+# 🏭 WMS  - Sistema de Gestión de Almacenes
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4-green?logo=spring-boot)
