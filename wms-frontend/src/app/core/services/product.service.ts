@@ -17,4 +17,12 @@ export class ProductService {
   createProduct(product: Product): Observable<Product> {
     return this.http.post<Product>(`${this.apiUrl}/create`, product);
   }
+
+  updateProduct(sku: string, productData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/${sku}`, productData);
+  }
+  
+  deleteProduct(sku: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${sku}`);
+  }
 }

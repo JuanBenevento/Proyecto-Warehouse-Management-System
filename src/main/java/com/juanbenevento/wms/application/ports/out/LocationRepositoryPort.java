@@ -9,4 +9,6 @@ public interface LocationRepositoryPort {
     Location save(Location location);
     Optional<Location> findByCode(String code);
     List<Location> findAll();
+    void delete(String locationCode);
+    boolean hasInventory(String locationCode);
 }

@@ -1,8 +1,7 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
 import com.juanbenevento.wms.application.ports.in.CreateProductCommand;
-import com.juanbenevento.wms.application.ports.in.CreateProductUseCase;
-import com.juanbenevento.wms.application.service.ProductService;
+import com.juanbenevento.wms.application.ports.in.ManageProductUseCase;
 import com.juanbenevento.wms.domain.model.Product;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,21 +18,20 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final CreateProductUseCase createProductUseCase;
+    private final ManageProductUseCase manageProductUseCase;
 
-    public ProductController(CreateProductUseCase createProductUseCase) {
-        this.createProductUseCase = createProductUseCase;
+    public ProductController(ManageProductUseCase manageProductUseCase) {
+        this.manageProductUseCase = manageProductUseCase;
     }
 
     @GetMapping("getAllProducts")
     public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(createProductUseCase.getAllProducts());
+        return ResponseEntity.ok(manageProductUseCase.getAllProducts());
     }
 
     @PostMapping("/create")
     public ResponseEntity<Product> createProduct(@RequestBody @Valid CreateProductRequest request) {
 
-        // 1. Convertir DTO Web (JSON) -> Comando Interno
         CreateProductCommand command = new CreateProductCommand(
                 request.sku(),
                 request.name(),
@@ -43,15 +42,35 @@ public class ProductController {
                 request.weight()
         );
 
-        // 2. Ejecutar Caso de Uso
-        Product createdProduct = createProductUseCase.createProduct(command);
+        Product createdProduct = manageProductUseCase.createProduct(command);
 
-        // 3. Retornar respuesta
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    // DTO interno para recibir el JSON (Record)
-    // Lo definimos aquí mismo o en un paquete .dto si prefieres
+    @PutMapping("/{sku}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Product> updateProduct(@PathVariable String sku, @RequestBody @Valid CreateProductRequest request) {
+
+        CreateProductCommand command = new CreateProductCommand(
+                request.sku(),
+                request.name(),
+                request.description(),
+                request.width(),
+                request.height(),
+                request.depth(),
+                request.weight()
+        );
+
+        return ResponseEntity.ok(manageProductUseCase.updateProduct(sku, command));
+    }
+
+    @DeleteMapping("/{sku}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable String sku) {
+        manageProductUseCase.deleteProduct(sku);
+        return ResponseEntity.noContent().build();
+    }
+
     public record CreateProductRequest(
             @NotBlank(message = "El SKU es obligatorio")
             String sku,

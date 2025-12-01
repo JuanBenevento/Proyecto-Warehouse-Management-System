@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InventoryService, InventoryItemResponse } from '../../../core/services/inventory.service';
+import { showBackendError } from '../../../shared/utils/error-handler';
 
 @Component({
   selector: 'app-inventory-receive',
@@ -34,7 +35,8 @@ export class InventoryReceiveComponent {
         this.generatedTicket = response;
       },
       error: (err: any) => {
-        this.errorMessage = 'Error: ' + (err.error?.message || 'Verifica los datos');
+        console.error(err);
+        showBackendError(err, 'Error en Recepción');
       }
     });
   }

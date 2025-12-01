@@ -12,6 +12,7 @@
           <th>Dimensiones (cm)</th>
           <th>Volumen (cm³)</th>
           <th>Peso</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +23,14 @@
           <td>{{ p.storageVolume | number:'1.2-2' }}</td> <td>
             <span *ngIf="p.dimensions.heavyLoad" class="badge bg-danger">Pesado</span>
             {{ p.dimensions.weight }} kg
+          </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="edit(p)">
+              Editar
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="delete(p.sku)">
+              Eliminar
+            </button>
           </td>
         </tr>
         

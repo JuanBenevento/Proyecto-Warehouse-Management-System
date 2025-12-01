@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
 import com.juanbenevento.wms.domain.model.Dimensions;
 import com.juanbenevento.wms.domain.model.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,52 +11,57 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@RequiredArgsConstructor
 public class ProductPersistenceAdapter implements ProductRepositoryPort {
-
     private final SpringDataProductRepository jpaRepository;
-
-    public ProductPersistenceAdapter(SpringDataProductRepository jpaRepository) {
-        this.jpaRepository = jpaRepository;
-    }
+    private final SpringDataInventoryRepository inventoryRepository;
 
     @Override
     public Product save(Product product) {
-        // 1. Convertir Dominio -> Entidad DB
         ProductEntity entity = toEntity(product);
 
-        // 2. Guardar en DB
         ProductEntity savedEntity = jpaRepository.save(entity);
 
-        // 3. Convertir Entidad DB -> Dominio y retornar
         return toDomain(savedEntity);
     }
 
     @Override
     public Optional<Product> findBySku(String sku) {
         return jpaRepository.findBySku(sku)
-                .map(this::toDomain); // Si existe, lo convierte a dominio
+                .map(this::toDomain);
     }
 
     @Override
     public List<Product> findAll() {
         return jpaRepository.findAll()
                 .stream()
-                .map(this::toDomain) // Reutilizamos tu método toDomain
+                .map(this::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void delete(String sku) {
+        jpaRepository.findBySku(sku).ifPresent(jpaRepository::delete);
+    }
+
+    @Override
+    public boolean existsInInventory(String sku) {
+        return !inventoryRepository.findByProductSku(sku).isEmpty();
+    }
+
     // --- MAPPERS (Traductores) ---
 
     private ProductEntity toEntity(Product product) {
-        return new ProductEntity(
-                product.getId(),
-                product.getSku(),
-                product.getName(),
-                product.getDescription(),
-                product.getDimensions().width(),
-                product.getDimensions().height(),
-                product.getDimensions().depth(),
-                product.getDimensions().weight()
-        );
+        return ProductEntity.builder()
+                .id(product.getId())
+                .sku(product.getSku())
+                .name(product.getName())
+                .description(product.getDescription())
+                .width(product.getDimensions().width())
+                .height(product.getDimensions().height())
+                .depth(product.getDimensions().depth())
+                .weight(product.getDimensions().weight())
+                .build();
     }
 
     private Product toDomain(ProductEntity entity) {

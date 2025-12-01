@@ -1,21 +1,26 @@
 package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
+
 
 @Entity
 @Table(name = "products")
 @Getter
 @Setter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE products SET active = false WHERE id = ?")
+@SQLRestriction("active = true")
 public class ProductEntity extends AuditableEntity{
 
     @Id
@@ -29,4 +34,8 @@ public class ProductEntity extends AuditableEntity{
     private Double height;
     private Double depth;
     private Double weight;
+
+    @Builder.Default
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
 }

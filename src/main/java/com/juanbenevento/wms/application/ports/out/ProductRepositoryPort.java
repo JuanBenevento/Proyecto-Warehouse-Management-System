@@ -9,4 +9,6 @@ public interface ProductRepositoryPort {
     Optional<Product> findBySku(String sku);
     Product save(Product product);
     List<Product> findAll();
+    boolean existsInInventory(String sku);
+    void delete(String sku);
 }

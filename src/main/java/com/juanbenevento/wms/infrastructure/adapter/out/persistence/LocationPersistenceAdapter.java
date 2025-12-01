@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-@RequiredArgsConstructor // Lombok nos crea el constructor automáticamente
+@RequiredArgsConstructor
 public class LocationPersistenceAdapter implements LocationRepositoryPort {
-
     private final SpringDataLocationRepository jpaRepository;
+    private final SpringDataInventoryRepository inventoryRepository;
 
     @Override
     public Location save(Location location) {
@@ -34,6 +34,17 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
                 .stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(String locationCode) {
+        jpaRepository.deleteById(locationCode);
+    }
+
+    @Override
+    public boolean hasInventory(String locationCode) {
+        // Verifica si existe al menos un item en esta ubicación que no esté SHIPPED
+        return !inventoryRepository.findByLocationCode(locationCode).isEmpty();
     }
 
     // --- MAPPERS (Traductores) ---

@@ -4,8 +4,9 @@ import com.juanbenevento.wms.domain.model.Product;
 
 import java.util.List;
 
-public interface CreateProductUseCase {
+public interface ManageProductUseCase {
     Product createProduct(CreateProductCommand command);
     List<Product> getAllProducts();
-
+    Product updateProduct(String sku, CreateProductCommand command);
+    void deleteProduct(String sku);
 }
