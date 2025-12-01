@@ -5,6 +5,9 @@ import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
 import com.juanbenevento.wms.application.service.LocationService;
 import com.juanbenevento.wms.domain.model.Location;
 import com.juanbenevento.wms.domain.model.ZoneType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,54 +19,52 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
+@Tag(name = "2. Topología y Ubicaciones", description = "Gestión del mapa físico (Racks, Pasillos, Zonas).")
 public class LocationController {
     private final LocationRepositoryPort locationRepository;
     private final LocationService locationService;
 
-    @GetMapping("/getAllLocations")
+    @Operation(summary = "Ver mapa del depósito", description = "Lista todas las ubicaciones y su estado de ocupación.")
+    @GetMapping
     public ResponseEntity<List<Location>> getAllLocations() {
         return ResponseEntity.ok(locationRepository.findAll());
     }
 
-    @PostMapping("/createLocation")
+    @Operation(summary = "Crear ubicación")
+    @PostMapping
     public ResponseEntity<Location> createLocation(@RequestBody CreateLocationRequest request) {
         CreateLocationCommand command = new CreateLocationCommand(
-                request.locationCode(),
-                request.zoneType(),
-                request.maxWeight(),
-                request.maxVolume()
+                request.locationCode(), request.zoneType(), request.maxWeight(), request.maxVolume()
         );
-
-        Location created = locationService.createLocation(command);
-        return new ResponseEntity<>(created, HttpStatus.CREATED);
+        return new ResponseEntity<>(locationService.createLocation(command), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Eliminar ubicación", description = "Solo permitido si la ubicación está 100% vacía.")
     @DeleteMapping("/{code}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteLocation(@PathVariable String code) {
-        // Asumiendo que agregaste el método al servicio (o a la interfaz del caso de uso)
-        // Puedes castear o inyectar LocationService directamente para este MVP
         locationService.deleteLocation(code);
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Modificar ubicación")
     @PutMapping("/{code}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Location> updateLocation(@PathVariable String code, @RequestBody CreateLocationRequest request) {
-
         CreateLocationCommand command = new CreateLocationCommand(
                 code, request.zoneType(), request.maxWeight(), request.maxVolume()
         );
-
-        Location updated = locationService.updateLocation(code, command);
-        return ResponseEntity.ok(updated);
+        return ResponseEntity.ok(locationService.updateLocation(code, command));
     }
 
-    // DTO para el JSON de entrada
     public record CreateLocationRequest(
+            @Schema(example = "A-01-01-1", description = "Código de Pasillo-Rack-Nivel")
             String locationCode,
+            @Schema(example = "DRY_STORAGE", description = "Zona (DRY, COLD, FROZEN, HAZMAT)")
             ZoneType zoneType,
+            @Schema(example = "1000.0")
             Double maxWeight,
+            @Schema(example = "2000000.0")
             Double maxVolume
     ) {}
 }
