@@ -76,7 +76,7 @@ git clone [https://github.com/JuanBenevento/Proyecto-Warehouse-Management-System
 cd Proyecto-Warehouse-Management-System
 # Configura tu usuario/pass en src/main/resources/application.properties
 ./mvnw spring-boot:run
-
+```
 3. Frontend 
 cd wms-frontend
 npm install
