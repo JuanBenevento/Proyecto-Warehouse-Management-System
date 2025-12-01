@@ -98,5 +98,5 @@ El proyecto se encuentra en evolución constante. Las próximas mejoras planific
 
 [ ] Multi-tenancy: Soporte para múltiples clientes en la misma instancia.
 
-🤝 Contacto
-Desarrollado por Juan Manuel Benevento Full Stack Developer
+
+-->Desarrollado por Juan Manuel Benevento Full Stack Developer<--
