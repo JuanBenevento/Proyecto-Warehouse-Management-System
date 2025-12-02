@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/auth/login/login';
-import { authGuard } from './core/guards/auth-guard';
-import { roleGuard } from './core/guards/role-guard';
-
+import { LoginComponent } from '../app/features/auth/login/login'; 
+import { authGuard } from '../app/core/guards/auth-guard';
+import { roleGuard } from '../app/core/guards/role-guard';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+
   {
     path: '',
-    canActivate: [authGuard], 
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { 
@@ -66,8 +66,17 @@ export const routes: Routes = [
           .then(m => m.UserManagementComponent), 
         canActivate: [roleGuard], 
         data: { role: 'ADMIN' } 
+      },
+      { 
+        path: 'saas-panel', 
+        loadComponent: () => import('./features/super-admin-dashboard/super-admin-dashboard')
+          .then(m => m.SuperAdminDashboardComponent), 
+        canActivate: [roleGuard], 
+        data: { role: 'SUPER_ADMIN' } 
       }
     ]
   },
+
+  // Ruta por defecto para errores 404
   { path: '**', redirectTo: '/dashboard' } 
 ];

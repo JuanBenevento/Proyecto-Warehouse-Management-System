@@ -1,8 +1,6 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
-import com.juanbenevento.wms.domain.model.Role;
-import com.juanbenevento.wms.infrastructure.adapter.out.persistence.UserEntity;
-import com.juanbenevento.wms.infrastructure.adapter.out.persistence.UserRepository;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.SpringDataUserRepository;
 import com.juanbenevento.wms.infrastructure.config.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "0. Autenticación", description = "Obtención de Tokens JWT.")
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final SpringDataUserRepository springDataUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -34,7 +32,7 @@ public class AuthController {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.username, request.password)
         );
-        var user = userRepository.findByUsername(request.username).orElseThrow();
+        var user = springDataUserRepository.findByUsername(request.username).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return ResponseEntity.ok(new AuthResponse(jwtToken));
     }

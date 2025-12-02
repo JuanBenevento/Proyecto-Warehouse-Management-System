@@ -10,7 +10,6 @@ public record CreateProductCommand(
         Double depth,
         Double weight
 ) {
-    // Validación básica de entrada (Fail Fast)
     public CreateProductCommand {
         if (sku == null || sku.isBlank()) throw new IllegalArgumentException("SKU requerido");
         if (weight == null || weight <= 0) throw new IllegalArgumentException("Peso inválido");

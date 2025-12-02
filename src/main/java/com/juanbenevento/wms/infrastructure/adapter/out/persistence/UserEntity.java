@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements UserDetails { // <--- CLAVE: Implementar UserDetails
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,16 +26,16 @@ public class UserEntity implements UserDetails { // <--- CLAVE: Implementar User
     private String username;
 
     @Column(nullable = false)
-    private String password; // Guardaremos el HASH, no el texto plano
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // ADMIN, OPERATOR
+    private Role role;
 
-    // --- Métodos obligatorios de UserDetails ---
+    @Column(name = "tenant_id", nullable = false)
+    private String tenantId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convierte el ENUM en un permiso de Spring Security
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 

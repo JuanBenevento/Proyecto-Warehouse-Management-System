@@ -2,7 +2,7 @@ package com.juanbenevento.wms.application.service;
 
 import com.juanbenevento.wms.domain.model.Role;
 import com.juanbenevento.wms.infrastructure.adapter.out.persistence.UserEntity;
-import com.juanbenevento.wms.infrastructure.adapter.out.persistence.UserRepository;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.SpringDataUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,17 +14,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final SpringDataUserRepository springDataUserRepository;
     private final PasswordEncoder passwordEncoder;
 
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
+        return springDataUserRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
     public UserResponse createUser(CreateUserRequest request) {
-        if (userRepository.findByUsername(request.username).isPresent()) {
+        if (springDataUserRepository.findByUsername(request.username).isPresent()) {
             throw new IllegalArgumentException("El usuario ya existe");
         }
 
@@ -34,15 +34,15 @@ public class UserService {
                 .role(request.role)
                 .build();
 
-        UserEntity saved = userRepository.save(user);
+        UserEntity saved = springDataUserRepository.save(user);
         return mapToResponse(saved);
     }
 
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
+        if (!springDataUserRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
-        userRepository.deleteById(id);
+        springDataUserRepository.deleteById(id);
     }
 
     private UserResponse mapToResponse(UserEntity user) {
