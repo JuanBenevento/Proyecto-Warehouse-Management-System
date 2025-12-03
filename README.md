@@ -19,7 +19,6 @@ El proyecto se aleja del clásico MVC acoplado para implementar una **Arquitectu
 * **Infrastructure Layer (Adaptadores):** Implementaciones técnicas (REST Controllers, JPA Repositories, JWT Security) que se conectan al núcleo.
 
 ### Diagrama Conceptual
-*(Tu código sigue este flujo estricto)*
 `Request WEB` ➔ `Controller (Adapter)` ➔ `UseCase (Port)` ➔ `Service (Application)` ➔ `Repository (Port)` ➔ `JPA (Adapter)` ➔ `DB`
 
 ---
