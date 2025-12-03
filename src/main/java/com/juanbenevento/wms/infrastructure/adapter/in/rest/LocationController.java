@@ -1,8 +1,7 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
-import com.juanbenevento.wms.application.ports.in.CreateLocationCommand;
-import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
-import com.juanbenevento.wms.application.service.LocationService;
+import com.juanbenevento.wms.application.ports.in.command.CreateLocationCommand;
+import com.juanbenevento.wms.application.ports.in.ManageLocationUseCase;
 import com.juanbenevento.wms.domain.model.Location;
 import com.juanbenevento.wms.domain.model.ZoneType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,13 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "2. Topología y Ubicaciones", description = "Gestión del mapa físico (Racks, Pasillos, Zonas).")
 public class LocationController {
-    private final LocationRepositoryPort locationRepository;
-    private final LocationService locationService;
+    private final ManageLocationUseCase manageLocationUseCase;
 
     @Operation(summary = "Ver mapa del depósito", description = "Lista todas las ubicaciones y su estado de ocupación.")
     @GetMapping
     public ResponseEntity<List<Location>> getAllLocations() {
-        return ResponseEntity.ok(locationRepository.findAll());
+        return ResponseEntity.ok(manageLocationUseCase.getAllLocations());
     }
 
     @Operation(summary = "Crear ubicación")
@@ -36,14 +34,14 @@ public class LocationController {
         CreateLocationCommand command = new CreateLocationCommand(
                 request.locationCode(), request.zoneType(), request.maxWeight(), request.maxVolume()
         );
-        return new ResponseEntity<>(locationService.createLocation(command), HttpStatus.CREATED);
+        return new ResponseEntity<>(manageLocationUseCase.createLocation(command), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Eliminar ubicación", description = "Solo permitido si la ubicación está 100% vacía.")
     @DeleteMapping("/{code}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteLocation(@PathVariable String code) {
-        locationService.deleteLocation(code);
+        manageLocationUseCase.deleteLocation(code);
         return ResponseEntity.noContent().build();
     }
 
@@ -54,16 +52,20 @@ public class LocationController {
         CreateLocationCommand command = new CreateLocationCommand(
                 code, request.zoneType(), request.maxWeight(), request.maxVolume()
         );
-        return ResponseEntity.ok(locationService.updateLocation(code, command));
+        return ResponseEntity.ok(manageLocationUseCase.updateLocation(code, command));
     }
 
+    // DTO Record con Documentación
     public record CreateLocationRequest(
             @Schema(example = "A-01-01-1", description = "Código de Pasillo-Rack-Nivel")
             String locationCode,
+
             @Schema(example = "DRY_STORAGE", description = "Zona (DRY, COLD, FROZEN, HAZMAT)")
             ZoneType zoneType,
+
             @Schema(example = "1000.0")
             Double maxWeight,
+
             @Schema(example = "2000000.0")
             Double maxVolume
     ) {}

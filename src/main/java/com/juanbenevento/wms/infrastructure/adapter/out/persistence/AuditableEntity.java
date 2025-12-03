@@ -1,8 +1,10 @@
 package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
+import com.juanbenevento.wms.infrastructure.config.tenant.TenantContext;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,12 +21,12 @@ import java.time.LocalDateTime;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-@MappedSuperclass // Significa: "No crees una tabla para mí, pon mis columnas en las tablas de mis hijos"
-@EntityListeners(AuditingEntityListener.class) // El "espía" de JPA que llena los datos
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableEntity {
 
     @CreatedBy
-    @Column(updatable = false) // El creador nunca cambia
+    @Column(updatable = false)
     private String createdBy;
 
     @CreatedDate
@@ -36,4 +38,16 @@ public abstract class AuditableEntity {
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    @Column(name = "tenant_id", nullable = false, updatable = false)
+    private String tenantId;
+
+    @PrePersist
+    public void prePersist() {
+        this.tenantId = TenantContext.getTenantId();
+
+        if (this.tenantId == null) {
+            this.tenantId = "DEFAULT_COMPANY";
+        }
+    }
 }

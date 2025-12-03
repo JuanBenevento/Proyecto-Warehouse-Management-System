@@ -1,5 +1,6 @@
 package com.juanbenevento.wms.application.ports.in;
 
+import com.juanbenevento.wms.application.ports.in.command.CreateProductCommand;
 import com.juanbenevento.wms.domain.model.Product;
 
 import java.util.List;

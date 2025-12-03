@@ -1,8 +1,8 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
-import com.juanbenevento.wms.application.ports.in.AllocateStockCommand;
+import com.juanbenevento.wms.application.ports.in.command.AllocateStockCommand;
 import com.juanbenevento.wms.application.ports.in.AllocateStockUseCase;
-import com.juanbenevento.wms.application.ports.in.ShipStockCommand;
+import com.juanbenevento.wms.application.ports.in.command.ShipStockCommand;
 import com.juanbenevento.wms.application.ports.in.ShipStockUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "4. Salidas y Despacho (Outbound)", description = "Gestión de pedidos, reserva de stock y liberación de espacio.")
 public class PickingController {
-
     private final AllocateStockUseCase allocateStockUseCase;
     private final ShipStockUseCase shipStockUseCase;
 

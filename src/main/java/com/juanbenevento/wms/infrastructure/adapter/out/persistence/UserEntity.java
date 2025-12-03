@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +14,10 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements UserDetails { // <--- CLAVE: Implementar UserDetails
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,16 +27,16 @@ public class UserEntity implements UserDetails { // <--- CLAVE: Implementar User
     private String username;
 
     @Column(nullable = false)
-    private String password; // Guardaremos el HASH, no el texto plano
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // ADMIN, OPERATOR
+    private Role role;
 
-    // --- Métodos obligatorios de UserDetails ---
+    @Column(name = "tenant_id", nullable = false)
+    private String tenantId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convierte el ENUM en un permiso de Spring Security
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 

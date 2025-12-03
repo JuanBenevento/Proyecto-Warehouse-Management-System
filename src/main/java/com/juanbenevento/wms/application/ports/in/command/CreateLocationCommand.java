@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.application.ports.in;
+package com.juanbenevento.wms.application.ports.in.command;
 
 import com.juanbenevento.wms.domain.model.ZoneType;
 

@@ -1,14 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface InventoryItemResponse {
-  lpn: string;
-  productSku: string;
-  quantity: number;
-  status: string;
-  locationCode: string;
-}
+import { InventoryItemResponse } from '../models/inventaryItemResponse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +21,6 @@ export class InventoryService {
   }
 
   getAllInventory(): Observable<InventoryItemResponse[]> {
-    return this.http.get<InventoryItemResponse[]>(`${this.apiUrl}/getAllInventory`);
+    return this.http.get<InventoryItemResponse[]>(this.apiUrl);
   }
 }
