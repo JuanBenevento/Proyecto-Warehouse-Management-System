@@ -2,19 +2,34 @@ name: WMS Java CI with Maven 🚀
 
 on:
   push:
-    branches: [ "dev", "main" ] # Se ejecuta cuando subes código a dev o main
+    branches: [ "dev", "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest # Usamos una máquina Linux de GitHub
+    runs-on: ubuntu-latest
+
+    # 👇 ESTA ES LA MAGIA: Levantamos una DB temporal en la nube
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: wms_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: branca # Usamos tu misma clave para que el test pase
+        ports:
+          - 5432:5432
+        # Esto espera a que la DB esté lista antes de correr los tests
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      # 1. Bajar tu código
       - uses: actions/checkout@v4
 
-      # 2. Instalar Java 21
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -22,11 +37,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 3. Dar permisos de ejecución al wrapper (por si acaso)
       - name: Grant execute permission for mvnw
         run: chmod +x mvnw
 
-      # 4. Correr los Tests y Compilar
-      # Nota: Maven en la nube descargará todo fresco (sin caché corrupta)
       - name: Build with Maven
+        # Quitamos -DskipTests para demostrar que el código es robusto
         run: ./mvnw clean verify
