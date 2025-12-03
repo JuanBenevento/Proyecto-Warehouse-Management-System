@@ -1,0 +1,32 @@
+name: WMS Java CI with Maven 🚀
+
+on:
+  push:
+    branches: [ "dev", "main" ] # Se ejecuta cuando subes código a dev o main
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Usamos una máquina Linux de GitHub
+
+    steps:
+      # 1. Bajar tu código
+      - uses: actions/checkout@v4
+
+      # 2. Instalar Java 21
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # 3. Dar permisos de ejecución al wrapper (por si acaso)
+      - name: Grant execute permission for mvnw
+        run: chmod +x mvnw
+
+      # 4. Correr los Tests y Compilar
+      # Nota: Maven en la nube descargará todo fresco (sin caché corrupta)
+      - name: Build with Maven
+        run: ./mvnw clean verify

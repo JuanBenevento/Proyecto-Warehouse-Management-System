@@ -5,12 +5,13 @@ import com.juanbenevento.wms.domain.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class UserPersistenceAdapter implements UserRepositoryPort {
-
     private final SpringDataUserRepository jpaRepository;
 
     @Override
@@ -31,7 +32,24 @@ public class UserPersistenceAdapter implements UserRepositoryPort {
         return jpaRepository.existsByUsername(username);
     }
 
-    // --- MAPPERS ---
+    @Override
+    public List<User> findAll() {
+        return jpaRepository.findAll().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        jpaRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return jpaRepository.existsById(id);
+    }
+
+    // --- MAPPERS (Se mantienen igual) ---
 
     private UserEntity toEntity(User domain) {
         return UserEntity.builder()

@@ -1,16 +1,23 @@
 package com.juanbenevento.wms.application.service;
 
-import com.juanbenevento.wms.application.ports.in.CreateLocationCommand;
+import com.juanbenevento.wms.application.ports.in.command.CreateLocationCommand;
 import com.juanbenevento.wms.application.ports.in.ManageLocationUseCase;
 import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
 import com.juanbenevento.wms.domain.model.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LocationService implements ManageLocationUseCase {
     private final LocationRepositoryPort locationRepository;
+
+    @Override
+    public List<Location> getAllLocations() {
+        return locationRepository.findAll();
+    }
 
     @Override
     public Location createLocation(CreateLocationCommand command) {
@@ -30,6 +37,7 @@ public class LocationService implements ManageLocationUseCase {
         return locationRepository.save(newLocation);
     }
 
+    @Override
     public void deleteLocation(String code) {
         // 1. Validar que exista
         if (locationRepository.findByCode(code).isEmpty()) {
@@ -44,7 +52,8 @@ public class LocationService implements ManageLocationUseCase {
         locationRepository.delete(code);
     }
 
-    // Método para MODIFICAR (Solo permitimos cambiar tipo y capacidad, no el código)
+
+    @Override
     public Location updateLocation(String code, CreateLocationCommand command) {
         Location location = locationRepository.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("La ubicación no existe"));

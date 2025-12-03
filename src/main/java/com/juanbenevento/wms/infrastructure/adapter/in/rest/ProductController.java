@@ -1,6 +1,6 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
-import com.juanbenevento.wms.application.ports.in.CreateProductCommand;
+import com.juanbenevento.wms.application.ports.in.command.CreateProductCommand;
 import com.juanbenevento.wms.application.ports.in.ManageProductUseCase;
 import com.juanbenevento.wms.domain.model.Product;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @Tag(name = "1. Catálogo de Productos", description = "Gestión de maestros de productos (SKUs, Dimensiones, Peso)")
 public class ProductController {
-
     private final ManageProductUseCase manageProductUseCase;
 
     public ProductController(ManageProductUseCase manageProductUseCase) {

@@ -1,6 +1,6 @@
 package com.juanbenevento.wms.application.service;
 
-import com.juanbenevento.wms.application.ports.in.AllocateStockCommand;
+import com.juanbenevento.wms.application.ports.in.command.AllocateStockCommand;
 import com.juanbenevento.wms.application.ports.in.AllocateStockUseCase;
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.domain.model.InventoryItem;

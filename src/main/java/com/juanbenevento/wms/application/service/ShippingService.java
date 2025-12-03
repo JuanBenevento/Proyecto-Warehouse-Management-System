@@ -1,6 +1,6 @@
 package com.juanbenevento.wms.application.service;
 
-import com.juanbenevento.wms.application.ports.in.ShipStockCommand;
+import com.juanbenevento.wms.application.ports.in.command.ShipStockCommand;
 import com.juanbenevento.wms.application.ports.in.ShipStockUseCase;
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;

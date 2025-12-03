@@ -8,27 +8,23 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-@Setter // Permitimos cambiar estado y ubicación
+@Setter
 public class InventoryItem {
 
-    private final String lpn; // ID Único (License Plate Number)
+    private final String lpn;
     private final String productSku;
 
     private Double quantity;
 
-    // Trazabilidad
     private final String batchNumber;
     private final LocalDate expiryDate;
 
     private InventoryStatus status;
 
-    // Dónde está ahora mismo
     private String locationCode;
 
-    // --- LÓGICA DE NEGOCIO ---
 
     public void moveTo(String newLocationCode) {
-        // Aquí podrías validar reglas, pero por ahora es simple
         this.locationCode = newLocationCode;
     }
 

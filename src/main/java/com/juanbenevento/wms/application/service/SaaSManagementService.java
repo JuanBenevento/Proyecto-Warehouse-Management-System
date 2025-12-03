@@ -1,7 +1,7 @@
 package com.juanbenevento.wms.application.service;
 
 import com.juanbenevento.wms.application.ports.in.ManageSaaSUseCase; // <--- Interfaz
-import com.juanbenevento.wms.application.ports.in.OnboardCompanyCommand; // <--- Comando
+import com.juanbenevento.wms.application.ports.in.command.OnboardCompanyCommand; // <--- Comando
 import com.juanbenevento.wms.application.ports.out.TenantRepositoryPort;
 import com.juanbenevento.wms.application.ports.out.UserRepositoryPort;
 import com.juanbenevento.wms.domain.model.Role;

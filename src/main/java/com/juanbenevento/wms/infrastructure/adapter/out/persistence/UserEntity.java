@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity implements UserDetails {

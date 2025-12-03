@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.application.ports.in;
+package com.juanbenevento.wms.application.ports.in.command;
 
 public record OnboardCompanyCommand(
         String companyName,

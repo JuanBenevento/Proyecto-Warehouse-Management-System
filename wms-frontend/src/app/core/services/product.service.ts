@@ -11,11 +11,11 @@ export class ProductService {
   private apiUrl = 'http://localhost:8080/api/v1/products';
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/getAllProducts`);
+    return this.http.get<Product[]>(this.apiUrl);
   }
 
   createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(`${this.apiUrl}/create`, product);
+    return this.http.post<Product>(this.apiUrl, product);
   }
 
   updateProduct(sku: string, productData: any): Observable<any> {

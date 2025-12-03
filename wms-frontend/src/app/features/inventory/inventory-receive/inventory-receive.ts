@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { InventoryService, InventoryItemResponse } from '../../../core/services/inventory.service';
+import { InventoryService} from '../../../core/services/inventory.service';
+import { InventoryItemResponse } from '../../../core/models/inventaryItemResponse.model';
 import { showBackendError } from '../../../shared/utils/error-handler';
 
 @Component({

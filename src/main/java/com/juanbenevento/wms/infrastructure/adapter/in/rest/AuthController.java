@@ -1,15 +1,11 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
-import com.juanbenevento.wms.infrastructure.adapter.out.persistence.SpringDataUserRepository;
-import com.juanbenevento.wms.infrastructure.config.JwtService;
+import com.juanbenevento.wms.application.ports.in.LoginUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,30 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "0. Autenticación", description = "Obtención de Tokens JWT.")
+@Tag(name = "0. Autenticación", description = "Gestión de acceso y tokens.")
 public class AuthController {
-
-    private final SpringDataUserRepository springDataUserRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final LoginUseCase loginUseCase;
 
     @Operation(summary = "Iniciar Sesión", description = "Devuelve el Token JWT para usar en el Header 'Authorization'.")
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.username, request.password)
+    public ResponseEntity<LoginUseCase.AuthResponse> login(@RequestBody LoginRequest request) {
+        LoginUseCase.LoginCommand command = new LoginUseCase.LoginCommand(
+                request.username(),
+                request.password()
         );
-        var user = springDataUserRepository.findByUsername(request.username).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return ResponseEntity.ok(new AuthResponse(jwtToken));
+
+        return ResponseEntity.ok(loginUseCase.login(command));
     }
 
+    // DTO Web para Swagger
     public record LoginRequest(
-            @Schema(example = "admin")
-            String username,
-            @Schema(example = "123")
-            String password
+            @Schema(example = "admin") String username,
+            @Schema(example = "123") String password
     ) {}
-    public record AuthResponse(String token) {}
 }

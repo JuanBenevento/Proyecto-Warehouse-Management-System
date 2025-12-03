@@ -1,7 +1,7 @@
 package com.juanbenevento.wms.infrastructure.adapter.in.rest;
 
 import com.juanbenevento.wms.application.ports.in.ManageSaaSUseCase;
-import com.juanbenevento.wms.application.ports.in.OnboardCompanyCommand;
+import com.juanbenevento.wms.application.ports.in.command.OnboardCompanyCommand;
 import com.juanbenevento.wms.domain.model.Tenant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +18,7 @@ import java.util.List;
 @Tag(name = "0. Panel SaaS (Super Admin)", description = "Gestión de clientes y suscripciones")
 public class SaaSController {
     private final ManageSaaSUseCase saasUseCase;
+
     @GetMapping("/tenants")
     @PreAuthorize("hasAuthority('SUPER_ADMIN')")
     @Operation(summary = "Listar Empresas", description = "Solo para el dueño del software.")

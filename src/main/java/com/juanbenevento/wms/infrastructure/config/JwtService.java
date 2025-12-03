@@ -1,6 +1,6 @@
 package com.juanbenevento.wms.infrastructure.config;
 
-import com.juanbenevento.wms.infrastructure.adapter.out.persistence.UserEntity;
+import com.juanbenevento.wms.domain.model.User; // <--- USAMOS EL DOMINIO
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,6 +25,7 @@ public class JwtService {
     @Value("${application.security.jwt.expiration}")
     private long jwtExpiration;
 
+    // --- EXTRAER DATOS ---
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -38,25 +39,33 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserEntity user) {
-        String role = user.getAuthorities().iterator().next().getAuthority();
+    // --- GENERAR TOKEN (Sobrecarga para Dominio) ---
+    // Este es el que usa tu AuthenticationService
+    public String generateToken(User user) {
         Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("role", role);
+        extraClaims.put("role", user.getRole().name());
         extraClaims.put("tenantId", user.getTenantId());
 
-        return generateToken(extraClaims, user);
+        return buildToken(extraClaims, user.getUsername());
     }
 
+    // --- GENERAR TOKEN (Sobrecarga para UserDetails estándar) ---
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return buildToken(extraClaims, userDetails.getUsername());
+    }
+
+    // --- MÉTODO PRIVADO DE CONSTRUCCIÓN (Para no repetir código) ---
+    private String buildToken(Map<String, Object> extraClaims, String username) {
         return Jwts.builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    // --- VALIDACIÓN ---
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
