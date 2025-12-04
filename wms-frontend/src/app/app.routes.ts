@@ -1,13 +1,15 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from '../app/features/auth/login/login'; 
+import { LoginComponent } from './features/login/login'; 
 import { authGuard } from '../app/core/guards/auth-guard';
 import { roleGuard } from '../app/core/guards/role-guard';
+import { MainLayout } from './core/layout/main-layout/main-layout';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   {
     path: '',
+    component: MainLayout,
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -42,20 +44,25 @@ export const routes: Routes = [
           .then(m => m.OutboundComponent) 
       },
       { 
+        path: 'despacho-final', 
+        loadComponent: () => import('./features/inventory/dispatch/dispatch')
+          .then(m => m.DispatchComponent) 
+      },
+      { 
         path: 'productos', 
-        loadComponent: () => import('./features/inventory/product-list/product-list')
+        loadComponent: () => import('./features/inventory/product-manager/product-list/product-list')
           .then(m => m.ProductListComponent) 
       },
       { 
         path: 'ubicaciones', 
-        loadComponent: () => import('./features/warehouse/location-create/location-create')
+        loadComponent: () => import('./features/warehouse/location-manager/location-create')
           .then(m => m.LocationCreateComponent),
         canActivate: [roleGuard], 
         data: { role: 'ADMIN' }
       },
       { 
         path: 'nuevo-producto', 
-        loadComponent: () => import('./features/inventory/product-create/product-create')
+        loadComponent: () => import('./features/inventory/product-manager/product-create/product-create')
           .then(m => m.ProductCreateComponent),
         canActivate: [roleGuard], 
         data: { role: 'ADMIN' } 
@@ -69,7 +76,7 @@ export const routes: Routes = [
       },
       { 
         path: 'saas-panel', 
-        loadComponent: () => import('./features/super-admin-dashboard/super-admin-dashboard')
+        loadComponent: () => import('./features/admin/super-admin-dashboard/super-admin-dashboard')
           .then(m => m.SuperAdminDashboardComponent), 
         canActivate: [roleGuard], 
         data: { role: 'SUPER_ADMIN' } 
@@ -77,6 +84,5 @@ export const routes: Routes = [
     ]
   },
 
-  // Ruta por defecto para errores 404
   { path: '**', redirectTo: '/dashboard' } 
 ];

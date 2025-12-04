@@ -1,13 +1,12 @@
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product.model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ProductService {
-  private http = inject(HttpClient); 
+  private http = inject(HttpClient);
+  // URL Base limpia
   private apiUrl = 'http://localhost:8080/api/v1/products';
 
   getProducts(): Observable<Product[]> {
@@ -15,14 +14,14 @@ export class ProductService {
   }
 
   createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+    return this.http.post<Product>(this.apiUrl, product); 
   }
 
-  updateProduct(sku: string, productData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${sku}`, productData);
+  updateProduct(sku: string, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/${sku}`, product); 
   }
-  
+
   deleteProduct(sku: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${sku}`);
+    return this.http.delete<void>(`${this.apiUrl}/${sku}`); 
   }
 }
