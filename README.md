@@ -1,101 +1,185 @@
-# 🏭 WMS  - Sistema de Gestión de Almacenes
+# Warehouse Management System (WMS)
 
-![Java](https://img.shields.io/badge/Java-21-orange?logo=java)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.4-green?logo=spring-boot)
-![Angular](https://img.shields.io/badge/Angular-17-red?logo=angular)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
-![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-purple)
+## 📌 Descripción General
 
-> **Plataforma integral de gestión logística.** Diseñada bajo principios de **Arquitectura Hexagonal** y **DDD (Domain-Driven Design)** para garantizar un núcleo de negocio desacoplado, seguro y escalable. Simula las operaciones críticas de un Centro de Distribución moderno.
+Este proyecto es un **Warehouse Management System (WMS)** desarrollado como proyecto personal con el objetivo de **demostrar competencias técnicas reales en ingeniería de software**, particularmente en el diseño y construcción de sistemas empresariales backend y full stack.
 
----
+El sistema modela operaciones centrales de un almacén:
 
-## 🧠 Arquitectura del Sistema
+* Gestión de productos
+* Control de inventario
+* Ubicaciones físicas con restricciones de capacidad
+* Movimientos de stock (recepción, reserva, despacho)
+* Auditoría mediante eventos de dominio
 
-El proyecto se aleja del clásico MVC acoplado para implementar una **Arquitectura de Puertos y Adaptadores (Hexagonal)**.
+El foco principal del proyecto está puesto en:
 
-* **Domain Layer (Núcleo):** Entidades puras (`Location`, `Product`) con lógica de negocio rica (validaciones físicas de peso/volumen). Sin dependencias de Frameworks.
-* **Application Layer (Orquestación):** Casos de uso (`ReceiveInventory`, `PickStock`) que coordinan el flujo de datos mediante interfaces (Puertos).
-* **Infrastructure Layer (Adaptadores):** Implementaciones técnicas (REST Controllers, JPA Repositories, JWT Security) que se conectan al núcleo.
-
-### Diagrama Conceptual
-`Request WEB` ➔ `Controller (Adapter)` ➔ `UseCase (Port)` ➔ `Service (Application)` ➔ `Repository (Port)` ➔ `JPA (Adapter)` ➔ `DB`
+* **Arquitectura limpia (Hexagonal / Clean Architecture)**
+* **Reglas de negocio explícitas**
+* **Separación de responsabilidades**
+* **Escalabilidad y mantenibilidad**
 
 ---
 
-## ✨ Funcionalidades Principales
+## 🧠 Motivación del Proyecto
 
-### 📦 1. Inbound (Recepción Inteligente)
-* **Generación de LPN:** Creación automática de *License Plate Numbers* para trazabilidad única de pallets.
-* **Validación Física:** El sistema impide recibir mercadería si excede la capacidad volumétrica o de peso de la ubicación destino.
-* **Control de Calidad:** Estado inicial `IN_QUALITY_CHECK` bloqueado para la venta hasta su aprobación.
+La mayoría de los proyectos junior se limitan a CRUD simples. Este WMS fue diseñado intencionalmente para:
 
-### 🧠 2. Estrategias de Ubicación (Put-Away)
-* Implementación del **Patrón Strategy** para sugerir ubicaciones.
-* Algoritmo que evalúa: Zona (Frío/Seco), Compatibilidad de Producto y Espacio Disponible.
-
-### 🚚 3. Outbound (Despacho)
-* **Reserva Transaccional:** Bloqueo de stock (`RESERVED`) para evitar sobreventa.
-* **Gestión de Estados:** Ciclo de vida completo: `AVAILABLE` ➔ `RESERVED` ➔ `SHIPPED`.
-* **Liberación de Espacio:** Actualización automática de la capacidad de la estantería al despachar.
-
-### 🔐 4. Seguridad & Gestión de Identidad
-* **Autenticación Stateless:** Implementación manual de JWT (JSON Web Tokens).
-* **RBAC (Role-Based Access Control):** Sistema de permisos granulares (`ADMIN` vs `OPERATOR`).
-* **Auditoría:** Trazabilidad de creación y modificación de registros (quién y cuándo).
+* Simular un **sistema real de la industria**
+* Aplicar principios de arquitectura utilizados en equipos profesionales
+* Practicar modelado de dominio y reglas de negocio
+* Servir como **prueba técnica viva** para procesos de selección laboral
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🏗️ Arquitectura
 
-| Capa | Tecnología | Detalles |
-| :--- | :--- | :--- |
-| **Backend** | Java 21 | Records, Stream API, Optional |
-| **Framework** | Spring Boot 3.4 | Spring Data JPA, Spring Security 6 |
-| **Frontend** | Angular 17+ | Standalone Components, Signals, Interceptors |
-| **Base de Datos** | PostgreSQL 16 | Relacional, integridad referencial |
-| **UI/UX** | Bootstrap 5 | Diseño responsivo, Modales (SweetAlert2) |
-| **Doc** | OpenAPI / Swagger | Documentación viva de la API |
+El backend implementa **Arquitectura Hexagonal (Ports & Adapters)**, con una separación clara entre:
 
----
-
-## 🚀 Instalación y Ejecución
-
-### Prerrequisitos
-* Java 21 JDK
-* Node.js (v18+)
-* PostgreSQL
-
-### 1. Base de Datos
-Crea una base de datos vacía llamada `wms_db` en tu servidor PostgreSQL local.
-
-### 2. Backend
-```bash
-git clone [https://github.com/JuanBenevento/Proyecto-Warehouse-Management-System.git](https://github.com/JuanBenevento/Proyecto-Warehouse-Management-System.git)
-cd Proyecto-Warehouse-Management-System
-# Configura tu usuario/pass en src/main/resources/application.properties
-./mvnw spring-boot:run
 ```
-3. Frontend 
-cd wms-frontend
-npm install
-ng serve -o
-Credenciales por defecto (al iniciar):
+com.juanbenevento.wms
+├── domain            # Núcleo del negocio (entidades, reglas, eventos)
+├── application       # Casos de uso y puertos
+└── infrastructure    # Adaptadores (REST, persistencia, seguridad)
+```
 
-El sistema permite registrar el primer usuario vía API o insertarlo en DB.
+### Capas
 
-Roles disponibles: ADMIN, OPERATOR.
+* **Domain**
 
-🔮 Roadmap (Próximos Pasos)
-El proyecto se encuentra en evolución constante. Las próximas mejoras planificadas son:
+  * Entidades ricas en comportamiento
+  * Validaciones de negocio
+  * Excepciones de dominio
+  * Eventos de dominio
 
-[ ] Migración de DB: Implementación de Flyway para versionado de esquemas.
+* **Application**
 
-[ ] Dockerización: Creación de docker-compose para despliegue en un click.
+  * Casos de uso explícitos
+  * Commands como DTOs (Java Records)
+  * Interfaces (ports) desacopladas de la infraestructura
 
-[ ] Observabilidad: Implementación de Logs estructurados y monitoreo (Actuator).
+* **Infrastructure**
 
-[ ] Multi-tenancy: Soporte para múltiples clientes en la misma instancia.
+  * Controladores REST
+  * Persistencia JPA
+  * Seguridad (JWT)
+  * Configuración técnica
 
+Esta estructura permite:
 
--->Desarrollado por Juan Manuel Benevento Full Stack Developer<--
+* Reemplazar frameworks sin afectar el negocio
+* Testear reglas de negocio de forma aislada
+* Escalar el sistema sin degradar la mantenibilidad
+
+---
+
+## 🧩 Modelado de Dominio
+
+El dominio no es anémico. Algunas reglas implementadas:
+
+* Un producto **no puede modificar sus dimensiones** si existe stock físico
+* Una ubicación **no puede exceder su capacidad** (peso / volumen)
+* Productos pesados requieren maquinaria especial
+* El inventario genera **eventos de dominio** ante cambios relevantes
+
+Ejemplos de conceptos modelados:
+
+* `Product`
+* `Dimensions`
+* `InventoryItem`
+* `Location`
+* Eventos como `StockReceivedEvent`, `InventoryAdjustedEvent`
+
+---
+
+## ⚙️ Stack Tecnológico
+
+### Backend
+
+* **Java 21**
+* **Spring Boot 3**
+* Spring Data JPA
+* Spring Security + JWT
+* PostgreSQL
+* SpringDoc OpenAPI (Swagger)
+
+### Frontend
+
+* **Angular 20**
+* Arquitectura modular por features
+
+### DevOps / Tooling
+
+* Maven Wrapper
+* GitHub Actions (CI)
+* PostgreSQL como servicio en CI
+
+---
+
+## 🧪 Testing
+
+* Tests unitarios enfocados en el **dominio y reglas de negocio**
+* Validaciones de invariantes críticas
+* Context load con seguridad simulada
+
+> El objetivo del testing no es la cobertura numérica, sino la **confianza en las reglas del negocio**.
+
+---
+
+## 🔐 Seguridad
+
+* Autenticación basada en JWT
+* Integración con Spring Security
+* Separación clara entre seguridad y lógica de negocio
+
+---
+
+## 🚀 CI/CD
+
+El proyecto cuenta con integración continua mediante **GitHub Actions**:
+
+* Build automático en ramas `dev` y `main`
+* Ejecución de tests
+* Base de datos PostgreSQL levantada como servicio
+
+Esto garantiza que el proyecto sea **ejecutable y verificable en cualquier entorno**.
+
+---
+
+## 🖥️ Frontend
+
+El frontend está organizado por dominios funcionales:
+
+* Inventory
+* Warehouse
+* Admin
+* Authentication
+
+Se priorizó la escalabilidad estructural sobre el diseño visual, dado que el foco del proyecto es **arquitectónico y de negocio**.
+
+---
+
+## 📈 Próximos Pasos / Roadmap
+
+Algunas mejoras planificadas:
+
+* Tests de integración con Testcontainers
+* Diagramas C4 (Context / Container)
+* Auditoría avanzada (createdBy / timestamps)
+* Manejo unificado de errores (Problem Details)
+* Despliegue en entorno cloud
+
+---
+
+## 👤 Autor
+
+**Juan Manuel Benevento**
+Técnico Universitario en Programación (UTN Mar del Plata)
+
+Proyecto desarrollado con fines educativos y profesionales, orientado a demostrar capacidad real de inserción laboral en equipos de desarrollo de software.
+
+---
+
+## 📄 Licencia
+
+Este proyecto se publica con fines demostrativos y educativos.
