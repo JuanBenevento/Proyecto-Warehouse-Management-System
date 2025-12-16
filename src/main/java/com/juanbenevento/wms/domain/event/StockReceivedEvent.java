@@ -7,5 +7,6 @@ public record StockReceivedEvent(
         String sku,
         Double quantity,
         String locationCode,
+        String username,
         LocalDateTime occurredAt
 ) {}

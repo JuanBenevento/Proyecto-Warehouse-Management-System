@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.application.ports.out.InventoryRepositoryPort;
 import com.juanbenevento.wms.domain.model.InventoryItem;
 import com.juanbenevento.wms.domain.model.InventoryStatus;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.InventoryItemEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -47,7 +48,6 @@ public class InventoryPersistenceAdapter implements InventoryRepositoryPort {
 
     @Override
     public List<InventoryItem> findReservedStock(String sku) {
-        // Reutilizamos la query de Spring Data pero filtrando por RESERVED
         return jpaRepository.findByProductSkuAndStatusOrderByExpiryDateAsc(sku, InventoryStatus.RESERVED)
                 .stream()
                 .map(this::toDomain)
@@ -73,6 +73,7 @@ public class InventoryPersistenceAdapter implements InventoryRepositoryPort {
                 .expiryDate(domain.getExpiryDate())
                 .status(domain.getStatus())
                 .locationCode(domain.getLocationCode())
+                .version(domain.getVersion())
                 .build();
     }
 
@@ -84,7 +85,8 @@ public class InventoryPersistenceAdapter implements InventoryRepositoryPort {
                 entity.getBatchNumber(),
                 entity.getExpiryDate(),
                 entity.getStatus(),
-                entity.getLocationCode()
+                entity.getLocationCode(),
+                entity.getVersion()
         );
     }
 }

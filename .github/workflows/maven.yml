@@ -10,17 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # 👇 ESTA ES LA MAGIA: Levantamos una DB temporal en la nube
     services:
       postgres:
         image: postgres:16
         env:
           POSTGRES_DB: wms_db
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: branca # Usamos tu misma clave para que el test pase
+          POSTGRES_PASSWORD: branca
         ports:
           - 5432:5432
-        # Esto espera a que la DB esté lista antes de correr los tests
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -41,5 +39,4 @@ jobs:
         run: chmod +x mvnw
 
       - name: Build with Maven
-        # Quitamos -DskipTests para demostrar que el código es robusto
         run: ./mvnw clean verify

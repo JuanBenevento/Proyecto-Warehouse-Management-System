@@ -12,24 +12,21 @@ import java.util.Optional;
 public class SmartPutAwayStrategy implements PutAwayStrategy {
 
     @Override
-    public Optional<Location> findBestLocation(Product product, Double quantity, List<Location> availableLocations) {
-        Double requiredWeight = product.getDimensions().weight() * quantity;
-        Double requiredVolume = product.getStorageVolume() * quantity;
+    public ZoneType determineZone(Product product) {
+        String desc = product.getDescription() != null ? product.getDescription().toUpperCase() : "";
+        String name = product.getName().toUpperCase();
 
-        ZoneType targetZone = determineZone(product);
-
-        return availableLocations.stream()
-                .filter(loc -> loc.getZoneType() == targetZone)
-                .filter(loc -> loc.hasSpaceFor(requiredWeight, requiredVolume))
-                .findFirst();
-    }
-
-    private ZoneType determineZone(Product product) {
-        String desc = product.getDescription().toUpperCase();
-        if (desc.contains("CONGELADO") || desc.contains("ICE")) return ZoneType.FROZEN_STORAGE;
-        if (desc.contains("REFRIGERADO") || desc.contains("FRESH")) return ZoneType.COLD_STORAGE;
-        if (desc.contains("PELIGRO") || desc.contains("ACID")) return ZoneType.HAZMAT;
+        if (desc.contains("CONGELADO") || desc.contains("ICE") || name.contains("HELADO")) {
+            return ZoneType.FROZEN_STORAGE;
+        }
+        if (desc.contains("REFRIGERADO") || desc.contains("FRESH") || name.contains("YOGURT")) {
+            return ZoneType.COLD_STORAGE;
+        }
+        if (desc.contains("PELIGRO") || desc.contains("ACID") || desc.contains("QUIMICO")) {
+            return ZoneType.HAZMAT;
+        }
 
         return ZoneType.DRY_STORAGE;
     }
+
 }

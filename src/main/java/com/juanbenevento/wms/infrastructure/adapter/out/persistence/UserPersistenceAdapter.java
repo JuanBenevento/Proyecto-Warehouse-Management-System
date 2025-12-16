@@ -2,6 +2,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
 import com.juanbenevento.wms.application.ports.out.UserRepositoryPort;
 import com.juanbenevento.wms.domain.model.User;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -15,7 +15,7 @@ class ProductTest {
         Dimensions dims = new Dimensions(10.0, 10.0, 10.0, 5.0);
 
         // When (Cuando)
-        Product product = new Product(UUID.randomUUID(), "SKU-123", "Laptop", "Gaming Laptop", dims);
+        Product product = new Product(UUID.randomUUID(), "SKU-123", "Laptop", "Gaming Laptop", dims, null);
 
         // Then (Entonces)
         Assertions.assertNotNull(product);
@@ -26,7 +26,7 @@ class ProductTest {
     void shouldIdentifyHeavyLoad() {
         // Producto de 50kg
         Dimensions heavyDims = new Dimensions(100.0, 100.0, 100.0, 50.0);
-        Product heavyProduct = new Product(UUID.randomUUID(), "SKU-HEAVY", "Motor", "V8", heavyDims);
+        Product heavyProduct = new Product(UUID.randomUUID(), "SKU-HEAVY", "Motor", "V8", heavyDims, 1L);
 
         Assertions.assertTrue(heavyProduct.requiresHeavyMachinery());
     }

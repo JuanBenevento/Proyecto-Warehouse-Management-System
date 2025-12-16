@@ -1,10 +1,10 @@
 package com.juanbenevento.wms.application.service;
 
-import com.juanbenevento.wms.application.ports.in.*;
 import com.juanbenevento.wms.application.ports.in.command.InternalMoveCommand;
 import com.juanbenevento.wms.application.ports.in.command.InventoryAdjustmentCommand;
 import com.juanbenevento.wms.application.ports.in.command.PutAwayInventoryCommand;
 import com.juanbenevento.wms.application.ports.in.command.ReceiveInventoryCommand;
+import com.juanbenevento.wms.application.ports.in.usecases.*;
 import com.juanbenevento.wms.application.ports.out.*;
 import com.juanbenevento.wms.domain.event.InventoryAdjustedEvent;
 import com.juanbenevento.wms.domain.event.StockReceivedEvent;
@@ -12,11 +12,14 @@ import com.juanbenevento.wms.domain.model.*;
 import com.juanbenevento.wms.domain.service.PutAwayStrategy; // Asegúrate de importar tu estrategia de dominio
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +43,24 @@ public class InventoryService implements
 
     @Override
     public String suggestBestLocation(String sku, Double quantity) {
-        var product = productRepository.findBySku(sku)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no existe"));
+        Product product = productRepository.findBySku(sku)
+                .orElseThrow(() -> new IllegalArgumentException("Producto no existe: " + sku));
 
-        var allLocations = locationRepository.findAll();
+        Double requiredWeight = product.getDimensions().weight() * quantity;
+        Double requiredVolume = product.getStorageVolume() * quantity;
 
-        return strategy.findBestLocation(product, quantity, allLocations)
-                .map(Location::getLocationCode)
-                .orElseThrow(() -> new IllegalArgumentException("No hay espacio disponible para este producto"));
+        ZoneType targetZone = strategy.determineZone(product);
+
+        List<Location> candidates = locationRepository.findAvailableLocations(targetZone, requiredWeight, requiredVolume);
+
+        if (candidates.isEmpty()) {
+            throw new IllegalArgumentException(
+                    String.format("No hay espacio disponible en zona %s para %.2f kg / %.2f m³",
+                            targetZone, requiredWeight, requiredVolume)
+            );
+        }
+
+        return candidates.get(0).getLocationCode();
     }
 
     @Override
@@ -72,7 +85,8 @@ public class InventoryService implements
                 command.batchNumber(),
                 command.expiryDate(),
                 InventoryStatus.IN_QUALITY_CHECK,
-                command.locationCode()
+                command.locationCode(),
+                null
         );
 
         InventoryItem savedItem = inventoryRepository.save(newItem);
@@ -82,6 +96,7 @@ public class InventoryService implements
                 savedItem.getProductSku(),
                 savedItem.getQuantity(),
                 savedItem.getLocationCode(),
+                getCurrentUser(),
                 LocalDateTime.now()
         );
         eventPublisher.publishEvent(event);
@@ -182,13 +197,24 @@ public class InventoryService implements
         inventoryRepository.save(item);
 
         InventoryAdjustedEvent event = new InventoryAdjustedEvent(
-                item.getLpn(), item.getProductSku(), oldQty, command.newQuantity(),
-                command.reason(), item.getLocationCode(), LocalDateTime.now()
+                item.getLpn(),
+                item.getProductSku(),
+                oldQty,
+                command.newQuantity(),
+                command.reason(),
+                item.getLocationCode(),
+                getCurrentUser(),
+                LocalDateTime.now()
         );
         eventPublisher.publishEvent(event);
     }
 
+    private String getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth != null ? auth.getName() : "SYSTEM";
+    }
+
     private String generateLpn() {
-        return "LPN-" + System.currentTimeMillis();
+        return "LPN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }

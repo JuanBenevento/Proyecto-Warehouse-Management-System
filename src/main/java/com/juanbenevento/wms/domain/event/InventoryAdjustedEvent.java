@@ -9,5 +9,6 @@ public record InventoryAdjustedEvent(
         Double newQuantity,
         String reason,
         String locationCode,
+        String username,
         LocalDateTime occurredAt
 ) {}

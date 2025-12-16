@@ -1,7 +1,7 @@
 package com.juanbenevento.wms.application.service;
 
 import com.juanbenevento.wms.application.ports.in.command.CreateProductCommand;
-import com.juanbenevento.wms.application.ports.in.ManageProductUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.ManageProductUseCase;
 import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
 import com.juanbenevento.wms.domain.model.Dimensions;
 import com.juanbenevento.wms.domain.model.Product;
@@ -36,7 +36,8 @@ public class ProductService implements ManageProductUseCase {
                 command.sku(),
                 command.name(),
                 command.description(),
-                dims
+                dims,
+                null
         );
 
         return productRepository.save(newProduct);
@@ -70,7 +71,8 @@ public class ProductService implements ManageProductUseCase {
                 sku,
                 command.name(),
                 command.description(),
-                newDims
+                newDims,
+                existing.getVersion()
         );
 
         return productRepository.save(updated);

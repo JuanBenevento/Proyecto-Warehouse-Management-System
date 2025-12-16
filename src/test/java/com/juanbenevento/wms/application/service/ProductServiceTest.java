@@ -29,7 +29,7 @@ class ProductServiceTest {
     void shouldThrowError_WhenUpdatingDimensionsWithExistingStock() {
         String sku = "TV-01";
         // Producto existente (Peso 10kg)
-        Product existing = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0, 10.0, 10.0, 10.0));
+        Product existing = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0, 10.0, 10.0, 10.0), 1L);
 
         // Comando de actualización (Intentamos cambiar peso a 20kg)
         CreateProductCommand updateCmd = new CreateProductCommand(sku, "TV", "Desc", 10.0, 10.0, 10.0, 20.0);
@@ -50,7 +50,7 @@ class ProductServiceTest {
     @Test
     void shouldAllowUpdate_WhenNoStockExists() {
         String sku = "TV-01";
-        Product existing = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0, 10.0, 10.0, 10.0));
+        Product existing = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0, 10.0, 10.0, 10.0), 1L);
         // Cambio de peso
         CreateProductCommand updateCmd = new CreateProductCommand(sku, "TV", "Desc", 10.0, 10.0, 10.0, 20.0);
 

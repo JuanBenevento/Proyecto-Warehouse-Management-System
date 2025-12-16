@@ -13,15 +13,12 @@ public class InventoryItem {
 
     private final String lpn;
     private final String productSku;
-
     private Double quantity;
-
     private final String batchNumber;
     private final LocalDate expiryDate;
-
     private InventoryStatus status;
-
     private String locationCode;
+    private Long version;
 
 
     public void moveTo(String newLocationCode) {

@@ -1,6 +1,7 @@
 package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
 import com.juanbenevento.wms.domain.model.InventoryStatus;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.InventoryItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

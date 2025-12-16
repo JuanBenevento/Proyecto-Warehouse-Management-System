@@ -2,6 +2,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
 import com.juanbenevento.wms.application.ports.out.TenantRepositoryPort;
 import com.juanbenevento.wms.domain.model.Tenant;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.TenantEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
