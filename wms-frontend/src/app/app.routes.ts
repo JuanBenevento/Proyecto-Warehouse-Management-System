@@ -39,6 +39,11 @@ export const routes: Routes = [
           .then(m => m.PutAwayStrategyComponent) 
       },
       { 
+        path: 'movimientos', 
+        loadComponent: () => import('./features/inventory/internal-move/internal-move')
+          .then(m => m.InternalMoveComponent) 
+      },
+      { 
         path: 'salidas', 
         loadComponent: () => import('./features/inventory/outbound/outbound')
           .then(m => m.OutboundComponent) 
@@ -71,6 +76,13 @@ export const routes: Routes = [
         path: 'usuarios', 
         loadComponent: () => import('./features/admin/user-management/user-management')
           .then(m => m.UserManagementComponent), 
+        canActivate: [roleGuard], 
+        data: { role: 'ADMIN' } 
+      },
+      { 
+        path: 'historial', 
+        loadComponent: () => import('./features/inventory/audit-history/audit-history')
+          .then(m => m.AuditHistoryComponent), 
         canActivate: [roleGuard], 
         data: { role: 'ADMIN' } 
       },

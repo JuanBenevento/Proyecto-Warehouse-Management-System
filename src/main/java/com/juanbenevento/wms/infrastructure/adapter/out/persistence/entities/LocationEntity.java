@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
 import com.juanbenevento.wms.domain.model.ZoneType;
 import jakarta.persistence.*;
@@ -6,17 +6,17 @@ import lombok.*;
 
 @Entity
 @Table(name = "locations")
-@Data // Crea Getters, Setters, ToString, Equals, HashCode
-@NoArgsConstructor // Obligatorio para Hibernate
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder // Nos permite crear objetos de forma fluida
+@Builder
 public class LocationEntity {
 
     @Id
     @Column(name = "location_code")
     private String locationCode;
 
-    @Enumerated(EnumType.STRING) // Guarda el texto "COLD_STORAGE" en la DB, no un número
+    @Enumerated(EnumType.STRING)
     private ZoneType zoneType;
 
     private Double maxWeight;
@@ -24,4 +24,7 @@ public class LocationEntity {
 
     private Double currentWeight;
     private Double currentVolume;
+
+    @Version
+    private Long version;
 }

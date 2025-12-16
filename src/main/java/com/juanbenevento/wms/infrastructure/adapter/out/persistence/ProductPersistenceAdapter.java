@@ -3,6 +3,7 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 import com.juanbenevento.wms.application.ports.out.ProductRepositoryPort;
 import com.juanbenevento.wms.domain.model.Dimensions;
 import com.juanbenevento.wms.domain.model.Product;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,9 +20,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
     @Override
     public Product save(Product product) {
         ProductEntity entity = toEntity(product);
-
         ProductEntity savedEntity = jpaRepository.save(entity);
-
         return toDomain(savedEntity);
     }
 
@@ -49,7 +48,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
         return !inventoryRepository.findByProductSku(sku).isEmpty();
     }
 
-    // --- MAPPERS (Traductores) ---
+    // --- MAPPERS ---
 
     private ProductEntity toEntity(Product product) {
         return ProductEntity.builder()
@@ -61,6 +60,7 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 .height(product.getDimensions().height())
                 .depth(product.getDimensions().depth())
                 .weight(product.getDimensions().weight())
+                .version(product.getVersion()) // <--- Mapear Versión
                 .build();
     }
 
@@ -77,7 +77,8 @@ public class ProductPersistenceAdapter implements ProductRepositoryPort {
                 entity.getSku(),
                 entity.getName(),
                 entity.getDescription(),
-                dims
+                dims,
+                entity.getVersion() // <--- Recuperar Versión
         );
     }
 }

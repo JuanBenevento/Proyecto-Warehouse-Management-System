@@ -43,8 +43,8 @@ class InventoryServiceTest {
         String locationCode = "A-01-01";
         ReceiveInventoryCommand command = new ReceiveInventoryCommand(sku, 10.0, locationCode, "BATCH-001", LocalDate.now().plusYears(1));
 
-        Product mockProduct = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0,10.0,10.0,5.0));
-        Location mockLocation = new Location(locationCode, ZoneType.DRY_STORAGE, 100000.0, 100000.0);
+        Product mockProduct = new Product(UUID.randomUUID(), sku, "TV", "Desc", new Dimensions(10.0,10.0,10.0,5.0), 1L);
+        Location mockLocation = new Location(locationCode, ZoneType.DRY_STORAGE, 100000.0, 100000.0, 1L);
 
         when(productRepository.findBySku(sku)).thenReturn(Optional.of(mockProduct));
         when(locationRepository.findByCode(locationCode)).thenReturn(Optional.of(mockLocation));
@@ -63,31 +63,28 @@ class InventoryServiceTest {
         String oldLocCode = "DOCK";
         String newLocCode = "A-01";
         double quantity = 10.0;
-        double productWeight = 5.0; // Total 50kg
+        double productWeight = 5.0;
 
-        // Mocks
-        InventoryItem item = new InventoryItem(lpn, "SKU-1", quantity, "B1", LocalDate.now(), InventoryStatus.IN_QUALITY_CHECK, oldLocCode);
-        Product product = new Product(UUID.randomUUID(), "SKU-1", "P", "D", new Dimensions(1.0,1.0,1.0, productWeight));
+        InventoryItem item = new InventoryItem(lpn, "SKU-1", quantity, "B1", LocalDate.now(), InventoryStatus.IN_QUALITY_CHECK, oldLocCode, 1L);
+        Product product = new Product(UUID.randomUUID(), "SKU-1", "P", "D", new Dimensions(1.0,1.0,1.0, productWeight), 1L);
 
-        Location oldLoc = new Location(oldLocCode, ZoneType.DOCK_DOOR, 1000.0, 1000.0);
+        Location oldLoc = new Location(oldLocCode, ZoneType.DOCK_DOOR, 1000.0, 1000.0, 1L);
         oldLoc.addLoad(50.0, 10.0);
 
-        Location newLoc = new Location(newLocCode, ZoneType.DRY_STORAGE, 1000.0, 1000.0);
+        Location newLoc = new Location(newLocCode, ZoneType.DRY_STORAGE, 1000.0, 1000.0, 1L);
 
         when(inventoryRepository.findByLpn(lpn)).thenReturn(Optional.of(item));
         when(locationRepository.findByCode(oldLocCode)).thenReturn(Optional.of(oldLoc));
         when(locationRepository.findByCode(newLocCode)).thenReturn(Optional.of(newLoc));
         when(productRepository.findBySku("SKU-1")).thenReturn(Optional.of(product));
 
-        // Acción
         inventoryService.putAwayInventory(new PutAwayInventoryCommand(lpn, newLocCode));
 
-        // Verificaciones
         assertEquals(0.0, oldLoc.getCurrentWeight(), "El peso debió salir del DOCK");
         assertEquals(50.0, newLoc.getCurrentWeight(), "El peso debió entrar en A-01");
         assertEquals(InventoryStatus.AVAILABLE, item.getStatus(), "El estado debió cambiar a AVAILABLE");
 
-        verify(locationRepository, times(2)).save(any(Location.class)); // Guardó ambas ubicaciones
+        verify(locationRepository, times(2)).save(any(Location.class));
     }
 
     @Test
@@ -95,9 +92,10 @@ class InventoryServiceTest {
         String lpn = "LPN-TEST";
         InventoryAdjustmentCommand command = new InventoryAdjustmentCommand(lpn, 8.0, "Rotura");
 
-        InventoryItem item = new InventoryItem(lpn, "SKU-1", 10.0, "B1", LocalDate.now(), InventoryStatus.AVAILABLE, "A-01");
-        Location loc = new Location("A-01", ZoneType.DRY_STORAGE, 1000.0, 1000.0);
-        Product product = new Product(UUID.randomUUID(), "SKU-1", "P", "D", new Dimensions(1.0,1.0,1.0, 1.0));
+        // CORRECCIÓN: Agregamos version=1L
+        InventoryItem item = new InventoryItem(lpn, "SKU-1", 10.0, "B1", LocalDate.now(), InventoryStatus.AVAILABLE, "A-01", 1L);
+        Location loc = new Location("A-01", ZoneType.DRY_STORAGE, 1000.0, 1000.0, 1L);
+        Product product = new Product(UUID.randomUUID(), "SKU-1", "P", "D", new Dimensions(1.0,1.0,1.0, 1.0), 1L);
 
         when(inventoryRepository.findByLpn(lpn)).thenReturn(Optional.of(item));
         when(locationRepository.findByCode("A-01")).thenReturn(Optional.of(loc));
@@ -106,7 +104,6 @@ class InventoryServiceTest {
         inventoryService.processInventoryAdjustment(command);
 
         assertEquals(8.0, item.getQuantity());
-        // Verificar que se disparó el evento de auditoría
         verify(eventPublisher).publishEvent(any(InventoryAdjustedEvent.class));
     }
 }

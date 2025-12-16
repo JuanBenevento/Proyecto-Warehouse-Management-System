@@ -1,6 +1,6 @@
-package com.juanbenevento.wms.infrastructure.adapter.in.rest;
+package com.juanbenevento.wms.infrastructure.adapter.in.rest.controllers;
 
-import com.juanbenevento.wms.application.ports.in.ManageSaaSUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.ManageSaaSUseCase;
 import com.juanbenevento.wms.application.ports.in.command.OnboardCompanyCommand;
 import com.juanbenevento.wms.domain.model.Tenant;
 import io.swagger.v3.oas.annotations.Operation;

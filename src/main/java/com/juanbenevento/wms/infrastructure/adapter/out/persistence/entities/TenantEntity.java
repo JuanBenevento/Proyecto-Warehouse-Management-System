@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
 import com.juanbenevento.wms.domain.model.TenantStatus;
 import jakarta.persistence.*;

@@ -1,9 +1,9 @@
-package com.juanbenevento.wms.infrastructure.adapter.in.rest;
+package com.juanbenevento.wms.infrastructure.adapter.in.rest.controllers;
 
 import com.juanbenevento.wms.application.ports.in.command.AllocateStockCommand;
-import com.juanbenevento.wms.application.ports.in.AllocateStockUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.AllocateStockUseCase;
 import com.juanbenevento.wms.application.ports.in.command.ShipStockCommand;
-import com.juanbenevento.wms.application.ports.in.ShipStockUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.ShipStockUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;

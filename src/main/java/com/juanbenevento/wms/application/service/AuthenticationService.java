@@ -1,6 +1,6 @@
 package com.juanbenevento.wms.application.service;
 
-import com.juanbenevento.wms.application.ports.in.LoginUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.LoginUseCase;
 import com.juanbenevento.wms.application.ports.out.UserRepositoryPort;
 import com.juanbenevento.wms.domain.model.User;
 import com.juanbenevento.wms.infrastructure.config.JwtService;

@@ -1,7 +1,7 @@
-package com.juanbenevento.wms.infrastructure.adapter.in.rest;
+package com.juanbenevento.wms.infrastructure.adapter.in.rest.controllers;
 
 import com.juanbenevento.wms.application.ports.in.command.CreateLocationCommand;
-import com.juanbenevento.wms.application.ports.in.ManageLocationUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.ManageLocationUseCase;
 import com.juanbenevento.wms.domain.model.Location;
 import com.juanbenevento.wms.domain.model.ZoneType;
 import io.swagger.v3.oas.annotations.Operation;

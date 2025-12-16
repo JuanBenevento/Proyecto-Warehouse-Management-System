@@ -1,7 +1,7 @@
-package com.juanbenevento.wms.infrastructure.adapter.in.rest;
+package com.juanbenevento.wms.infrastructure.adapter.in.rest.controllers;
 
 import com.juanbenevento.wms.application.ports.in.command.CreateProductCommand;
-import com.juanbenevento.wms.application.ports.in.ManageProductUseCase;
+import com.juanbenevento.wms.application.ports.in.usecases.ManageProductUseCase;
 import com.juanbenevento.wms.domain.model.Product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;

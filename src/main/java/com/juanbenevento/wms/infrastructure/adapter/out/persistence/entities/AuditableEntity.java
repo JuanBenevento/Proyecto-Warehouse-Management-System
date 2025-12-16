@@ -1,14 +1,14 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
-import com.juanbenevento.wms.infrastructure.config.tenant.TenantContext;
-import jakarta.persistence.Column;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PrePersist;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.listener.TenantEntityListener;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -22,7 +22,17 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+// FASE 1: Listeners para Auditoría y Seguridad Multitenant
+@EntityListeners({AuditingEntityListener.class, TenantEntityListener.class})
+// FASE 1: Definición del Filtro de Hibernate para Seguridad en Lectura
+@FilterDef(
+        name = "tenantFilter",
+        parameters = @ParamDef(name = "tenantId", type = String.class)
+)
+@Filter(
+        name = "tenantFilter",
+        condition = "tenant_id = :tenantId"
+)
 public abstract class AuditableEntity {
 
     @CreatedBy
@@ -42,12 +52,7 @@ public abstract class AuditableEntity {
     @Column(name = "tenant_id", nullable = false, updatable = false)
     private String tenantId;
 
-    @PrePersist
-    public void prePersist() {
-        this.tenantId = TenantContext.getTenantId();
-
-        if (this.tenantId == null) {
-            this.tenantId = "DEFAULT_COMPANY";
-        }
-    }
+    @Version
+    @Column(nullable = false)
+    private Long version;
 }

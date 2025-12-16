@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
 import com.juanbenevento.wms.domain.model.Role;
 import jakarta.persistence.*;
@@ -17,7 +17,8 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements UserDetails {
+@EqualsAndHashCode(callSuper = true)
+public class UserEntity extends AuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,9 +32,6 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Column(name = "tenant_id", nullable = false)
-    private String tenantId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

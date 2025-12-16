@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
-
 @Entity
 @Table(name = "products")
 @Getter
@@ -21,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE products SET active = false WHERE id = ?")
 @SQLRestriction("active = true")
-public class ProductEntity extends AuditableEntity{
+public class ProductEntity extends AuditableEntity {
 
     @Id
     private UUID id;

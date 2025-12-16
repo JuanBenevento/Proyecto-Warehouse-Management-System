@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
+package com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities;
 
 import com.juanbenevento.wms.domain.model.InventoryStatus;
 import jakarta.persistence.*;
@@ -13,11 +13,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class InventoryItemEntity extends AuditableEntity{
+public class InventoryItemEntity extends AuditableEntity {
 
     @Id
     @Column(name = "lpn")
-    private String lpn; // La etiqueta es la Primary Key
+    private String lpn;
 
     @Column(nullable = false)
     private String productSku;
@@ -32,5 +32,4 @@ public class InventoryItemEntity extends AuditableEntity{
 
     @Column(nullable = false)
     private String locationCode;
-
 }

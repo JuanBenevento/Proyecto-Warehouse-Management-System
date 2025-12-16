@@ -1,4 +1,4 @@
-package com.juanbenevento.wms.application.ports.in;
+package com.juanbenevento.wms.application.ports.in.usecases;
 
 import com.juanbenevento.wms.application.ports.in.command.OnboardCompanyCommand;
 import com.juanbenevento.wms.domain.model.Tenant;
