@@ -2,6 +2,8 @@ package com.juanbenevento.wms.infrastructure.adapter.out.persistence;
 
 import com.juanbenevento.wms.application.ports.out.LocationRepositoryPort;
 import com.juanbenevento.wms.domain.model.Location;
+import com.juanbenevento.wms.domain.model.ZoneType;
+import com.juanbenevento.wms.infrastructure.adapter.out.persistence.entities.LocationEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -43,11 +45,18 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
 
     @Override
     public boolean hasInventory(String locationCode) {
-        // Verifica si existe al menos un item en esta ubicación que no esté SHIPPED
         return !inventoryRepository.findByLocationCode(locationCode).isEmpty();
     }
 
-    // --- MAPPERS (Traductores) ---
+    @Override
+    public List<Location> findAvailableLocations(ZoneType zone, Double weightNeeded, Double volumeNeeded) {
+        return jpaRepository.findCandidates(zone, weightNeeded, volumeNeeded)
+                .stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    // --- MAPPERS ---
 
     private LocationEntity toEntity(Location domain) {
         return LocationEntity.builder()
@@ -55,20 +64,21 @@ public class LocationPersistenceAdapter implements LocationRepositoryPort {
                 .zoneType(domain.getZoneType())
                 .maxWeight(domain.getMaxWeight())
                 .maxVolume(domain.getMaxVolume())
-                .currentWeight(domain.getCurrentWeight()) // Persistimos el estado actual
+                .currentWeight(domain.getCurrentWeight())
                 .currentVolume(domain.getCurrentVolume())
+                .version(domain.getVersion()) // <--- Mapear Versión
                 .build();
     }
 
     private Location toDomain(LocationEntity entity) {
-        // Reconstruimos el objeto de dominio con su estado
         return new Location(
                 entity.getLocationCode(),
                 entity.getZoneType(),
                 entity.getMaxWeight(),
                 entity.getMaxVolume(),
                 entity.getCurrentWeight(),
-                entity.getCurrentVolume()
+                entity.getCurrentVolume(),
+                entity.getVersion() // <--- Recuperar Versión
         );
     }
 }

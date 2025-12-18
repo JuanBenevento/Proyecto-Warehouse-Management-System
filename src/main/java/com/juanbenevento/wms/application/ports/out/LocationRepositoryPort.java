@@ -1,6 +1,7 @@
 package com.juanbenevento.wms.application.ports.out;
 
 import com.juanbenevento.wms.domain.model.Location;
+import com.juanbenevento.wms.domain.model.ZoneType;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,4 +12,5 @@ public interface LocationRepositoryPort {
     List<Location> findAll();
     void delete(String locationCode);
     boolean hasInventory(String locationCode);
+    List<Location> findAvailableLocations(ZoneType zone, Double weightNeeded, Double volumeNeeded);
 }
